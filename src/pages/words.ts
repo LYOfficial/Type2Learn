@@ -107,10 +107,10 @@ export class WordsPage {
       </div>
     `;
 
-    // 使用 requestAnimationFrame 确保 DOM 已更新
-    requestAnimationFrame(() => {
+    // 确保 DOM 更新后再绑定事件
+    setTimeout(() => {
       this.bindEvents();
-    });
+    }, 0);
   }
 
   private renderCurrentStudy(dict: WordBook, estimatedDate: string, progress: number, todayTask: any): string {
@@ -228,85 +228,96 @@ export class WordsPage {
   }
 
   private bindEvents() {
-    // 使用事件委托处理所有点击事件
-    this.container.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      const btn = target.closest('button, .wordbook-item, .user-dict-item, .import-card');
-      
-      if (!btn) return;
-      
-      // 选择词典按钮
-      if (btn.id === 'btn-select-dict' || btn.classList.contains('btn-start-select')) {
+    // 选择词库按钮
+    const selectDictBtn = this.container.querySelector('#btn-select-dict');
+    if (selectDictBtn) {
+      selectDictBtn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         this.showDictSelector();
-        return;
-      }
-      
-      // 继续学习
-      if (btn.id === 'btn-continue-study') {
+      });
+    }
+    
+    // 继续学习按钮
+    const continueStudyBtn = this.container.querySelector('#btn-continue-study');
+    if (continueStudyBtn) {
+      continueStudyBtn.addEventListener('click', () => {
         const studyDict = this.store.getStudyDict();
         if (studyDict) {
           this.router.navigate('words-practice', { bookId: studyDict.id, mode: 'study' });
         }
-        return;
-      }
-      
-      // 自由练习
-      if (btn.id === 'btn-free-practice') {
+      });
+    }
+    
+    // 自由练习按钮
+    const freePracticeBtn = this.container.querySelector('#btn-free-practice');
+    if (freePracticeBtn) {
+      freePracticeBtn.addEventListener('click', () => {
         const studyDict = this.store.getStudyDict();
         if (studyDict) {
           this.router.navigate('words-practice', { bookId: studyDict.id, mode: 'free' });
         }
-        return;
-      }
-      
-      // 更改每日目标
-      if (btn.id === 'btn-change-goal') {
+      });
+    }
+    
+    // 更改每日目标按钮
+    const changeGoalBtn = this.container.querySelector('#btn-change-goal');
+    if (changeGoalBtn) {
+      changeGoalBtn.addEventListener('click', () => {
         this.showGoalDialog();
-        return;
-      }
-      
-      // 更改进度
-      if (btn.id === 'btn-change-progress') {
+      });
+    }
+    
+    // 更改进度按钮
+    const changeProgressBtn = this.container.querySelector('#btn-change-progress');
+    if (changeProgressBtn) {
+      changeProgressBtn.addEventListener('click', () => {
         this.showProgressDialog();
-        return;
-      }
-      
-      // 管理词典
-      if (btn.id === 'btn-manage-dicts') {
-        console.log('Manage dicts');
-        return;
-      }
-      
-      // 导入Excel
-      if (btn.id === 'btn-import-excel' || btn.classList.contains('import-card')) {
-        console.log('Import Excel');
-        return;
-      }
-      
-      // 词库项
-      if (btn.classList.contains('wordbook-item')) {
-        const bookId = btn.getAttribute('data-id');
+      });
+    }
+    
+    // 管理词典按钮
+    const manageDictsBtn = this.container.querySelector('#btn-manage-dicts');
+    if (manageDictsBtn) {
+      manageDictsBtn.addEventListener('click', () => {
+        // TODO: 实现管理词典功能
+        alert('管理功能即将推出');
+      });
+    }
+    
+    // 导入Excel按钮
+    const importExcelBtn = this.container.querySelector('#btn-import-excel');
+    if (importExcelBtn) {
+      importExcelBtn.addEventListener('click', () => {
+        // TODO: 实现导入Excel功能
+        alert('导入功能即将推出');
+      });
+    }
+    
+    // 词库项点击
+    this.container.querySelectorAll('.wordbook-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const bookId = item.getAttribute('data-id');
         if (bookId) {
           this.showBookDetail(bookId);
         }
-        return;
-      }
-      
-      // 用户词典
-      if (btn.classList.contains('user-dict-item')) {
-        const dictId = btn.getAttribute('data-id');
-        console.log('User dict clicked:', dictId);
-        return;
-      }
+      });
+    });
+    
+    // 用户词典项点击
+    this.container.querySelectorAll('.user-dict-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const dictId = item.getAttribute('data-id');
+        // TODO: 实现用户词典点击功能
+        alert(`用户词典: ${dictId}`);
+      });
     });
   }
 
   private showDictSelector() {
     const wordBooks = this.store.getWordBooks();
     const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
+    modal.className = 'modal-overlay active';
     modal.innerHTML = `
       <div class="modal-content modal-dict-selector">
         <div class="modal-header">
@@ -361,7 +372,7 @@ export class WordsPage {
 
     const currentGoal = studyDict.perDayStudyNumber || 40;
     const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
+    modal.className = 'modal-overlay active';
     modal.innerHTML = `
       <div class="modal-content modal-sm">
         <div class="modal-header">
@@ -429,7 +440,7 @@ export class WordsPage {
 
     const currentIndex = studyDict.lastLearnIndex || 0;
     const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
+    modal.className = 'modal-overlay active';
     modal.innerHTML = `
       <div class="modal-content modal-sm">
         <div class="modal-header">
@@ -476,7 +487,7 @@ export class WordsPage {
     const days = this.wordService.getRemainingDays(bookId);
     
     const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
+    modal.className = 'modal-overlay active';
     modal.innerHTML = `
       <div class="modal-content">
         <div class="modal-header">

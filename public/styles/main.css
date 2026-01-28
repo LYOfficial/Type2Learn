@@ -2021,9 +2021,7 @@ html, body {
    单词学习页面 V2 - Type2Learn 自有风格
    ======================================== */
 .words-page-v2 {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0;
+  width: 100%;
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -2032,8 +2030,7 @@ html, body {
 .words-header {
   background: linear-gradient(135deg, var(--accent-color) 0%, #6366f1 100%);
   padding: 24px 32px;
-  border-radius: 0 0 24px 24px;
-  margin-bottom: 24px;
+  margin: 0;
 }
 
 .words-header .header-content h1 {
@@ -2053,10 +2050,13 @@ html, body {
 }
 
 .words-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
-  padding: 0 24px 24px;
+  padding: 24px;
 }
 
 .words-left,
@@ -2811,9 +2811,7 @@ html, body {
    古文背诵页面 V2 - Type2Learn 统一风格
    ======================================== */
 .poetry-page-v2 {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0;
+  width: 100%;
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -2822,8 +2820,7 @@ html, body {
 .poetry-header {
   background: linear-gradient(135deg, #9333ea 0%, #c026d3 100%);
   padding: 24px 32px;
-  border-radius: 0 0 24px 24px;
-  margin-bottom: 24px;
+  margin: 0;
 }
 
 .poetry-header .header-content h1 {
@@ -2843,10 +2840,13 @@ html, body {
 }
 
 .poetry-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr 1.5fr;
   gap: 24px;
-  padding: 0 24px 24px;
+  padding: 24px;
 }
 
 .poetry-left,
