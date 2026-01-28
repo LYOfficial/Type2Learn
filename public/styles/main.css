@@ -177,6 +177,24 @@ html, body {
   border-bottom: 1px solid var(--border-color);
 }
 
+.sidebar-logo {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.sidebar-logo .logo-type {
+  color: var(--text-primary);
+}
+
+.sidebar-logo .logo-2 {
+  color: var(--accent-color);
+  font-weight: 800;
+}
+
+.sidebar-logo .logo-learn {
+  color: #10b981;
+}
+
 .sidebar-title {
   font-size: 14px;
   font-weight: 600;
@@ -240,7 +258,8 @@ html, body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   background-color: var(--bg-primary);
 }
 
@@ -955,4 +974,2091 @@ html, body {
   .nav-item i {
     font-size: 20px;
   }
+}
+
+/* ========================================
+   单词学习页面 - TypeWords 风格
+   ======================================== */
+.words-page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.loading-spinner i {
+  margin-right: 8px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 当前学习词典区域 */
+.study-dict-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.current-dict-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 24px;
+  color: white;
+}
+
+.dict-info {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.dict-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.dict-details {
+  flex: 1;
+}
+
+.dict-name {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.dict-meta {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.progress-section {
+  margin-top: 16px;
+}
+
+.progress-bar.large {
+  height: 8px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.progress-bar.large .progress-fill {
+  background: white;
+}
+
+.progress-text,
+.progress-count {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.progress-count {
+  float: right;
+}
+
+.dict-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.5);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-outline:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: white;
+}
+
+/* 无词典状态 */
+.no-dict-card {
+  background: var(--bg-secondary);
+  border: 2px dashed var(--border-color);
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+}
+
+.no-dict-icon {
+  font-size: 48px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.no-dict-text h3 {
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+}
+
+.no-dict-text p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 20px 0;
+}
+
+/* 今日任务卡片 */
+.today-task-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.task-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.task-link {
+  font-size: 13px;
+  color: var(--accent-color);
+  cursor: pointer;
+  margin-left: 12px;
+}
+
+.daily-goal {
+  font-size: 14px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.goal-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: #9b59b6;
+  background: var(--bg-secondary);
+  padding: 4px 12px;
+  border-radius: 8px;
+}
+
+.btn-mini {
+  font-size: 12px;
+  padding: 4px 8px;
+  background: var(--bg-tertiary);
+  border: none;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.btn-mini:hover {
+  background: var(--hover-bg);
+}
+
+/* 任务统计 */
+.task-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 24px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat-number.new {
+  color: #ffc107;
+}
+
+.stat-number.review {
+  color: var(--text-primary);
+}
+
+.stat-number.review-all {
+  color: var(--text-muted);
+}
+
+.stat-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* 任务操作按钮 */
+.task-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-large {
+  padding: 12px 32px;
+  font-size: 16px;
+  border-radius: 25px;
+}
+
+.btn-dropdown {
+  padding: 12px 16px;
+  border-radius: 25px;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-dropdown:hover {
+  background: var(--accent-hover);
+}
+
+/* 下拉菜单 */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 8px 24px var(--shadow-color);
+  z-index: 100;
+  min-width: 160px;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+  background: var(--hover-bg);
+}
+
+/* 我的词典区域 */
+.my-dicts-section,
+.recommend-section {
+  margin-bottom: 24px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.section-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.action-link {
+  font-size: 14px;
+  color: var(--accent-color);
+  cursor: pointer;
+}
+
+.action-link:hover {
+  text-decoration: underline;
+}
+
+/* 词典卡片网格 */
+.dict-grid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.dict-card {
+  width: 120px;
+  height: 140px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dict-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.dict-card.add-card {
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+  color: var(--text-muted);
+  font-size: 32px;
+}
+
+.dict-card-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.dict-card-count {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* 推荐词库网格 */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+.book-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.book-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.book-card.studying {
+  border-color: var(--accent-color);
+  background: rgba(0, 120, 212, 0.05);
+}
+
+.book-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.book-count {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.studying-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 10px;
+  background: var(--accent-color);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ========================================
+   模态框样式
+   ======================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content.small {
+  max-width: 400px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.btn-close:hover {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* 词典列表 */
+.dict-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dict-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dict-list-item:hover {
+  background: var(--hover-bg);
+}
+
+.dict-list-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--accent-color);
+}
+
+.dict-list-info {
+  flex: 1;
+}
+
+.dict-list-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.dict-list-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.dict-list-count {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* 表单样式 */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.form-group input[type="number"],
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: var(--accent-color);
+}
+
+.form-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+.input-with-slider {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.input-with-slider input[type="number"] {
+  width: 80px;
+}
+
+.input-with-slider input[type="range"] {
+  flex: 1;
+}
+
+/* 书籍详情 */
+.book-detail-info p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.book-stats {
+  display: flex;
+  gap: 24px;
+}
+
+.book-stats .stat {
+  text-align: center;
+}
+
+.book-stats .stat-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.book-stats .stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ========================================
+   练习页面样式
+   ======================================== */
+.practice-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+}
+
+.practice-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.book-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.book-info .book-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.practice-mode {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.header-center {
+  flex: 1;
+  max-width: 400px;
+  margin: 0 24px;
+}
+
+.progress-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-indicator .progress-bar {
+  flex: 1;
+  height: 6px;
+}
+
+.progress-indicator .progress-text {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+
+.btn-icon:hover:not(:disabled) {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.btn-icon:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-icon.active {
+  color: #ffc107;
+}
+
+/* 单词展示区域 */
+.word-display-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.word-main {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.word-text {
+  font-size: 64px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+  transition: opacity 0.3s;
+}
+
+.word-text.hidden {
+  opacity: 0.1;
+  filter: blur(8px);
+}
+
+.word-phonetics {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.phonetic {
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+.btn-play {
+  color: var(--accent-color);
+}
+
+/* 单词信息标签页 */
+.word-tabs {
+  display: flex;
+  gap: 8px;
+  background: var(--bg-secondary);
+  padding: 6px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.word-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.word-tab:hover {
+  background: var(--hover-bg);
+}
+
+.word-tab.active {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  font-weight: 500;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.word-tab-content {
+  min-height: 80px;
+  padding: 20px 32px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+}
+
+.tab-meaning,
+.tab-example,
+.tab-phrase,
+.tab-synonym,
+.tab-cognate,
+.tab-etymology {
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--text-primary);
+}
+
+.tab-phonetic {
+  font-size: 20px;
+}
+
+.phonetic-item {
+  margin-bottom: 12px;
+}
+
+.phonetic-item .label {
+  color: var(--text-muted);
+  margin-right: 8px;
+}
+
+/* 输入区域 */
+.input-section {
+  padding: 24px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+.typing-area {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.word-input {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 28px;
+  text-align: center;
+  border: 2px solid var(--input-border);
+  border-radius: 16px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  outline: none;
+  font-family: 'Consolas', 'Monaco', monospace;
+  letter-spacing: 4px;
+  transition: all 0.2s;
+}
+
+.word-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4px rgba(0, 120, 212, 0.15);
+}
+
+.word-input.correct {
+  border-color: var(--success-color);
+  background: rgba(40, 167, 69, 0.08);
+}
+
+.word-input.error {
+  border-color: var(--error-color);
+  animation: shake 0.4s ease;
+}
+
+.input-hint {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+.input-hint kbd {
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* 底部状态栏 */
+.practice-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+}
+
+.stats-bar {
+  display: flex;
+  gap: 24px;
+}
+
+.stats-bar .stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.text-success {
+  color: var(--success-color);
+}
+
+.text-danger {
+  color: var(--error-color);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+/* ========================================
+   完成页面样式
+   ======================================== */
+.complete-page {
+  padding: 60px 24px;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.complete-header {
+  margin-bottom: 40px;
+}
+
+.complete-icon {
+  font-size: 80px;
+  margin-bottom: 16px;
+}
+
+.complete-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.complete-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.complete-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.stat-card .stat-icon {
+  font-size: 24px;
+  color: var(--accent-color);
+  margin-bottom: 8px;
+}
+
+.stat-card .stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.stat-card .stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* 错误单词列表 */
+.wrong-words-section {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.wrong-words-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  color: var(--text-primary);
+}
+
+.wrong-words-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wrong-word-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--card-bg);
+  border-radius: 8px;
+}
+
+.wrong-word-item .word {
+  font-weight: 600;
+  color: var(--error-color);
+}
+
+.wrong-word-item .meaning {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.complete-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* ========================================
+   单词学习页面 V2 - Type2Learn 自有风格
+   ======================================== */
+.words-page-v2 {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.words-header {
+  background: linear-gradient(135deg, var(--accent-color) 0%, #6366f1 100%);
+  padding: 24px 32px;
+  border-radius: 0 0 24px 24px;
+  margin-bottom: 24px;
+}
+
+.words-header .header-content h1 {
+  color: white;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.words-header .header-content p {
+  color: rgba(255,255,255,0.8);
+  font-size: 15px;
+  margin: 0;
+}
+
+.words-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 0 24px 24px;
+}
+
+.words-left,
+.words-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 当前学习卡片 */
+.current-study-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 16px var(--shadow-color);
+}
+
+.study-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.study-info {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.study-book-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--accent-color), #6366f1);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: white;
+}
+
+.study-details h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: var(--text-primary);
+}
+
+.study-meta {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.btn-change-book {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-change-book:hover {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+/* 进度条 */
+.study-progress-bar {
+  margin-bottom: 24px;
+}
+
+.progress-track {
+  height: 10px;
+  background: var(--bg-tertiary);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-track .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-color), #10b981);
+  border-radius: 5px;
+  transition: width 0.5s ease;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* 任务统计网格 */
+.study-task-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.task-stat {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.task-stat.new-words {
+  border-left: 4px solid #fbbf24;
+}
+
+.task-stat.review-words {
+  border-left: 4px solid var(--accent-color);
+}
+
+.task-stat.all-words {
+  border-left: 4px solid #10b981;
+}
+
+.task-number {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.task-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* 操作按钮 */
+.study-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.btn-primary-action {
+  flex: 1;
+  background: linear-gradient(135deg, var(--accent-color), #6366f1);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.btn-primary-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 120, 212, 0.3);
+}
+
+.btn-secondary-action {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-secondary-action:hover {
+  background: var(--hover-bg);
+}
+
+.btn-icon-action {
+  width: 48px;
+  height: 48px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 18px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-icon-action:hover {
+  background: var(--hover-bg);
+  color: var(--accent-color);
+}
+
+.daily-goal-info {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+
+.daily-goal-info strong {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+/* 无学习卡片 */
+.no-study-card {
+  background: var(--card-bg);
+  border: 2px dashed var(--border-color);
+  border-radius: 16px;
+  padding: 48px 32px;
+  text-align: center;
+}
+
+.no-study-icon {
+  font-size: 56px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.no-study-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.no-study-card p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 24px 0;
+}
+
+.btn-start-select {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.btn-start-select:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+/* 区块样式 */
+.words-section {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.words-section.user-section {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.section-title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-title-bar h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.action-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.action-btn:hover {
+  background: var(--hover-bg);
+}
+
+/* 用户词库列表 */
+.user-dict-list {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.user-dict-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.user-dict-item:hover {
+  background: var(--hover-bg);
+  transform: translateX(4px);
+}
+
+.user-dict-item i {
+  font-size: 18px;
+  color: var(--accent-color);
+}
+
+.user-dict-item .dict-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.user-dict-item .dict-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* 词库列表 */
+.wordbook-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wordbook-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.wordbook-item:hover {
+  background: var(--hover-bg);
+  border-color: var(--border-color);
+  transform: translateX(4px);
+}
+
+.wordbook-item.studying {
+  background: rgba(0, 120, 212, 0.08);
+  border-color: var(--accent-color);
+}
+
+.wordbook-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.wordbook-icon.icon-blue {
+  background: rgba(0, 120, 212, 0.15);
+  color: #0078d4;
+}
+
+.wordbook-icon.icon-purple {
+  background: rgba(139, 92, 246, 0.15);
+  color: #8b5cf6;
+}
+
+.wordbook-icon.icon-green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.wordbook-icon.icon-orange {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.wordbook-info {
+  flex: 1;
+}
+
+.wordbook-info h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.wordbook-info p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 0 8px 0;
+}
+
+.wordbook-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.wordbook-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.studying-indicator {
+  background: var(--accent-color);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.select-indicator {
+  color: var(--text-muted);
+  font-size: 20px;
+}
+
+/* 导入区块 */
+.import-section {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.import-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: var(--card-bg);
+  border: 1px dashed var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.import-card:hover {
+  background: var(--hover-bg);
+  border-style: solid;
+  border-color: var(--accent-color);
+}
+
+.import-card > i:first-child {
+  font-size: 32px;
+  color: #10b981;
+}
+
+.import-info {
+  flex: 1;
+}
+
+.import-info h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.import-info p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.import-card > i:last-child {
+  font-size: 20px;
+  color: var(--text-muted);
+}
+
+/* 加载状态 */
+.words-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* 模态框选择器 */
+.modal-dict-selector {
+  max-width: 500px;
+}
+
+.dict-selector-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dict-selector-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dict-selector-item:hover {
+  background: var(--hover-bg);
+  transform: translateX(4px);
+}
+
+.dict-selector-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.dict-selector-info {
+  flex: 1;
+}
+
+.dict-selector-info h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.dict-selector-info p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.dict-selector-count {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* 模态框小型 */
+.modal-sm {
+  max-width: 400px;
+}
+
+.goal-input-group,
+.progress-input-group {
+  text-align: center;
+}
+
+.goal-input-group label,
+.progress-input-group label {
+  display: block;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.goal-slider-group {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.goal-slider-group input[type="range"] {
+  flex: 1;
+  height: 6px;
+  -webkit-appearance: none;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+}
+
+.goal-slider-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.goal-slider-group input[type="number"],
+.progress-input-group input[type="number"] {
+  width: 80px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 18px;
+  text-align: center;
+  background: var(--input-bg);
+  color: var(--text-primary);
+}
+
+.goal-hint,
+.progress-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 12px 0 0 0;
+}
+
+/* 书籍详情 */
+.book-detail-content {
+  text-align: center;
+}
+
+.book-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0 0 24px 0;
+}
+
+.book-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.book-stat {
+  background: var(--bg-secondary);
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.book-stat .stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.book-stat .stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* 按钮样式 */
+.btn-primary {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--hover-bg);
+}
+
+/* 响应式调整 */
+@media (max-width: 900px) {
+  .words-main {
+    grid-template-columns: 1fr;
+  }
+  
+  .words-header {
+    padding: 24px;
+    border-radius: 0;
+  }
+  
+  .words-header .header-content h1 {
+    font-size: 22px;
+  }
+  
+  .poetry-main {
+    grid-template-columns: 1fr;
+  }
+  
+  .poetry-header {
+    padding: 24px;
+    border-radius: 0;
+  }
+}
+
+/* ========================================
+   古文背诵页面 V2 - Type2Learn 统一风格
+   ======================================== */
+.poetry-page-v2 {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.poetry-header {
+  background: linear-gradient(135deg, #9333ea 0%, #c026d3 100%);
+  padding: 24px 32px;
+  border-radius: 0 0 24px 24px;
+  margin-bottom: 24px;
+}
+
+.poetry-header .header-content h1 {
+  color: white;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.poetry-header .header-content p {
+  color: rgba(255,255,255,0.8);
+  font-size: 15px;
+  margin: 0;
+}
+
+.poetry-main {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 24px;
+  padding: 0 24px 24px;
+}
+
+.poetry-left,
+.poetry-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 统计卡片 */
+.poetry-stats-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.stats-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.stats-header i {
+  color: #9333ea;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.stat-box {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-box .stat-number {
+  font-size: 28px;
+  font-weight: 700;
+  color: #9333ea;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-box .stat-text {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* 提示卡片 */
+.poetry-tips-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.tips-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.tips-header i {
+  color: #fbbf24;
+}
+
+.tips-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tips-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tips-list li:last-child {
+  border-bottom: none;
+}
+
+.tips-list li i {
+  color: #10b981;
+  margin-top: 3px;
+}
+
+/* 诗集区块 */
+.poetry-section {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.poetry-section.import-section {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* 诗集列表 */
+.poetry-book-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.poetry-book-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.poetry-book-item:hover {
+  background: var(--hover-bg);
+  border-color: var(--border-color);
+  transform: translateX(4px);
+}
+
+.poetry-book-item .book-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.poetry-book-item .book-icon.icon-purple {
+  background: rgba(147, 51, 234, 0.15);
+  color: #9333ea;
+}
+
+.poetry-book-item .book-info {
+  flex: 1;
+}
+
+.poetry-book-item .book-info h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.poetry-book-item .book-info p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 0 8px 0;
+}
+
+.poetry-book-item .book-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.poetry-book-item .book-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.book-progress-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mini-progress {
+  width: 60px;
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mini-progress-fill {
+  height: 100%;
+  background: #9333ea;
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+
+.book-progress-indicator i {
+  color: var(--text-muted);
+  font-size: 18px;
 }

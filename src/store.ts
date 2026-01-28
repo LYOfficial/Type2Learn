@@ -1,10 +1,37 @@
-// 单词类型
+// 单词类型 - 扩展版，支持完整的单词信息
 export interface Word {
   id: string;
   word: string;
-  phonetic?: string;
-  meaning: string;
-  example?: string;
+  phonetic?: string;      // 音标①
+  phonetic2?: string;     // 音标②
+  meaning: string;        // 翻译/释义
+  example?: string;       // 例句
+  phrase?: string;        // 短语
+  synonym?: string;       // 近义词
+  cognate?: string;       // 同根词
+  etymology?: string;     // 词源
+}
+
+// 学习记录
+export interface WordLearningRecord {
+  wordId: string;
+  word: string;
+  learnedAt: number;      // 学习时间
+  reviewCount: number;    // 复习次数
+  correctCount: number;   // 正确次数
+  wrongCount: number;     // 错误次数
+  nextReviewAt: number;   // 下次复习时间
+  mastered: boolean;      // 是否已掌握
+}
+
+// 每日学习统计
+export interface DailyStats {
+  date: string;           // YYYY-MM-DD
+  newWords: number;       // 新学单词数
+  reviewWords: number;    // 复习单词数
+  correctCount: number;   // 正确次数
+  wrongCount: number;     // 错误次数
+  studyTime: number;      // 学习时长(秒)
 }
 
 // 单词本
@@ -13,8 +40,21 @@ export interface WordBook {
   name: string;
   description: string;
   words: Word[];
-  progress: number;
-  lastPractice?: number;
+  wordCount: number;           // 总词数
+  progress: number;            // 进度百分比
+  lastPractice?: number;       // 上次练习时间
+  lastLearnIndex: number;      // 上次学习位置
+  perDayStudyNumber: number;   // 每日学习新词数
+  complete: boolean;           // 是否已学完
+  custom?: boolean;            // 是否为自定义词库
+}
+
+// 用户词典（收藏、错词、已掌握等）
+export interface UserDict {
+  id: string;
+  name: string;
+  icon: string;
+  words: Word[];
 }
 
 // 古诗类型
@@ -63,6 +103,12 @@ export interface AppState {
   currentPoetryBookId?: string;
   currentCustomBookId?: string;
   settings: AppSettings;
+  // 新增：单词学习相关
+  userDicts: UserDict[];           // 用户词典（收藏、错词、已掌握）
+  learningRecords: WordLearningRecord[]; // 学习记录
+  dailyStats: DailyStats[];        // 每日统计
+  studyDictId?: string;            // 当前正在学习的词典ID
+  wordReviewRatio: number;         // 复习比例
 }
 
 // 应用设置
@@ -71,54 +117,66 @@ export interface AppSettings {
   autoNext: boolean;
   showHint: boolean;
   practiceCount: number;
+  perDayStudyNumber: number;       // 每日学习新词数，默认40
 }
 
-// 默认单词本数据
+// 默认单词本数据 - 四大默认词库
 const defaultWordBooks: WordBook[] = [
   {
     id: 'cet4',
-    name: 'CET-4 核心词汇',
-    description: '大学英语四级核心词汇 2000 词',
+    name: 'CET-4',
+    description: '大学英语四级词汇',
     progress: 0,
-    words: [
-      { id: '1', word: 'abandon', phonetic: '/əˈbændən/', meaning: 'v. 放弃，遗弃' },
-      { id: '2', word: 'ability', phonetic: '/əˈbɪləti/', meaning: 'n. 能力，才能' },
-      { id: '3', word: 'abroad', phonetic: '/əˈbrɔːd/', meaning: 'adv. 在国外' },
-      { id: '4', word: 'absence', phonetic: '/ˈæbsəns/', meaning: 'n. 缺席，缺乏' },
-      { id: '5', word: 'absolute', phonetic: '/ˈæbsəluːt/', meaning: 'adj. 绝对的，完全的' },
-      { id: '6', word: 'absorb', phonetic: '/əbˈzɔːrb/', meaning: 'v. 吸收，吸引' },
-      { id: '7', word: 'abstract', phonetic: '/ˈæbstrækt/', meaning: 'adj. 抽象的 n. 摘要' },
-      { id: '8', word: 'abundant', phonetic: '/əˈbʌndənt/', meaning: 'adj. 丰富的，充裕的' },
-      { id: '9', word: 'academic', phonetic: '/ˌækəˈdemɪk/', meaning: 'adj. 学术的，学院的' },
-      { id: '10', word: 'accelerate', phonetic: '/əkˈseləreɪt/', meaning: 'v. 加速，促进' },
-    ]
+    wordCount: 2607,
+    words: [],
+    lastLearnIndex: 0,
+    perDayStudyNumber: 40,
+    complete: false,
+    custom: false
   },
   {
     id: 'cet6',
-    name: 'CET-6 核心词汇',
-    description: '大学英语六级核心词汇 2500 词',
+    name: 'CET-6',
+    description: '大学英语六级词汇',
     progress: 0,
-    words: [
-      { id: '1', word: 'abolish', phonetic: '/əˈbɒlɪʃ/', meaning: 'v. 废除，取消' },
-      { id: '2', word: 'abrupt', phonetic: '/əˈbrʌpt/', meaning: 'adj. 突然的，唐突的' },
-      { id: '3', word: 'absurd', phonetic: '/əbˈsɜːrd/', meaning: 'adj. 荒谬的，可笑的' },
-      { id: '4', word: 'accumulate', phonetic: '/əˈkjuːmjəleɪt/', meaning: 'v. 积累，积聚' },
-      { id: '5', word: 'accurate', phonetic: '/ˈækjərət/', meaning: 'adj. 准确的，精确的' },
-    ]
+    wordCount: 2345,
+    words: [],
+    lastLearnIndex: 0,
+    perDayStudyNumber: 40,
+    complete: false,
+    custom: false
   },
   {
-    id: 'ielts',
-    name: '雅思核心词汇',
-    description: '雅思考试高频词汇 3000 词',
+    id: 'gk3500',
+    name: '高考3500词',
+    description: '高考英语核心词汇',
     progress: 0,
-    words: [
-      { id: '1', word: 'acknowledge', phonetic: '/əkˈnɒlɪdʒ/', meaning: 'v. 承认，感谢' },
-      { id: '2', word: 'acquire', phonetic: '/əˈkwaɪər/', meaning: 'v. 获得，学到' },
-      { id: '3', word: 'adapt', phonetic: '/əˈdæpt/', meaning: 'v. 适应，改编' },
-      { id: '4', word: 'adequate', phonetic: '/ˈædɪkwət/', meaning: 'adj. 足够的，适当的' },
-      { id: '5', word: 'adjacent', phonetic: '/əˈdʒeɪsnt/', meaning: 'adj. 邻近的，毗连的' },
-    ]
+    wordCount: 3893,
+    words: [],
+    lastLearnIndex: 0,
+    perDayStudyNumber: 40,
+    complete: false,
+    custom: false
+  },
+  {
+    id: 'ky',
+    name: '考研英语',
+    description: '考研英语词汇',
+    progress: 0,
+    wordCount: 3728,
+    words: [],
+    lastLearnIndex: 0,
+    perDayStudyNumber: 40,
+    complete: false,
+    custom: false
   }
+];
+
+// 默认用户词典
+const defaultUserDicts: UserDict[] = [
+  { id: 'collect', name: '收藏', icon: 'bi-star', words: [] },
+  { id: 'wrong', name: '错词', icon: 'bi-x-circle', words: [] },
+  { id: 'mastered', name: '已掌握', icon: 'bi-check-circle', words: [] }
 ];
 
 // 默认古诗数据
@@ -238,11 +296,16 @@ export class Store {
     wordBooks: [],
     poetryBooks: [],
     customBooks: [],
+    userDicts: [],
+    learningRecords: [],
+    dailyStats: [],
+    wordReviewRatio: 1,
     settings: {
       soundEnabled: true,
       autoNext: true,
       showHint: true,
-      practiceCount: 20
+      practiceCount: 20,
+      perDayStudyNumber: 40
     }
   };
 
@@ -258,12 +321,28 @@ export class Store {
       }
     }
 
-    // 如果没有数据，使用默认数据
-    if (this.state.wordBooks.length === 0) {
-      this.state.wordBooks = defaultWordBooks;
-    }
+    // 总是使用默认词库列表，但保留用户的学习进度
+    const oldWordBooks = this.state.wordBooks;
+    this.state.wordBooks = defaultWordBooks.map(defaultBook => {
+      const oldBook = oldWordBooks.find(b => b.id === defaultBook.id);
+      if (oldBook) {
+        // 保留用户进度，但使用新的名称和描述
+        return {
+          ...defaultBook,
+          progress: oldBook.progress,
+          lastLearnIndex: oldBook.lastLearnIndex,
+          lastPractice: oldBook.lastPractice,
+          words: oldBook.words
+        };
+      }
+      return defaultBook;
+    });
+
     if (this.state.poetryBooks.length === 0) {
       this.state.poetryBooks = defaultPoetryBooks;
+    }
+    if (!this.state.userDicts || this.state.userDicts.length === 0) {
+      this.state.userDicts = defaultUserDicts;
     }
 
     this.save();
@@ -283,14 +362,170 @@ export class Store {
     return this.state.wordBooks.find(book => book.id === id);
   }
 
+  // 更新单词本
+  updateWordBook(id: string, updates: Partial<WordBook>) {
+    const book = this.state.wordBooks.find(b => b.id === id);
+    if (book) {
+      Object.assign(book, updates);
+      this.save();
+    }
+  }
+
   // 更新单词本进度
-  updateWordBookProgress(id: string, progress: number) {
+  updateWordBookProgress(id: string, progress: number, lastLearnIndex?: number) {
     const book = this.state.wordBooks.find(b => b.id === id);
     if (book) {
       book.progress = progress;
       book.lastPractice = Date.now();
+      if (lastLearnIndex !== undefined) {
+        book.lastLearnIndex = lastLearnIndex;
+      }
+      if (progress >= 100) {
+        book.complete = true;
+      }
       this.save();
     }
+  }
+
+  // 设置当前学习的词典
+  setStudyDict(id: string) {
+    this.state.studyDictId = id;
+    this.save();
+  }
+
+  // 获取当前学习的词典
+  getStudyDict(): WordBook | undefined {
+    if (!this.state.studyDictId) return undefined;
+    return this.state.wordBooks.find(b => b.id === this.state.studyDictId);
+  }
+
+  // 获取用户词典
+  getUserDicts(): UserDict[] {
+    return this.state.userDicts || [];
+  }
+
+  // 获取单个用户词典
+  getUserDict(id: string): UserDict | undefined {
+    return this.state.userDicts?.find(d => d.id === id);
+  }
+
+  // 添加单词到用户词典
+  addWordToUserDict(dictId: string, word: Word) {
+    const dict = this.state.userDicts?.find(d => d.id === dictId);
+    if (dict && !dict.words.find(w => w.word === word.word)) {
+      dict.words.push(word);
+      this.save();
+    }
+  }
+
+  // 从用户词典移除单词
+  removeWordFromUserDict(dictId: string, wordId: string) {
+    const dict = this.state.userDicts?.find(d => d.id === dictId);
+    if (dict) {
+      dict.words = dict.words.filter(w => w.id !== wordId);
+      this.save();
+    }
+  }
+
+  // 记录学习数据
+  recordLearning(wordId: string, word: string, correct: boolean) {
+    let record = this.state.learningRecords.find(r => r.wordId === wordId);
+    if (!record) {
+      record = {
+        wordId,
+        word,
+        learnedAt: Date.now(),
+        reviewCount: 0,
+        correctCount: 0,
+        wrongCount: 0,
+        nextReviewAt: Date.now() + 24 * 60 * 60 * 1000, // 1天后复习
+        mastered: false
+      };
+      this.state.learningRecords.push(record);
+    }
+    
+    record.reviewCount++;
+    if (correct) {
+      record.correctCount++;
+      // 计算下次复习时间（艾宾浩斯遗忘曲线）
+      const intervals = [1, 2, 4, 7, 15, 30]; // 天数
+      const level = Math.min(record.correctCount, intervals.length - 1);
+      record.nextReviewAt = Date.now() + intervals[level] * 24 * 60 * 60 * 1000;
+      if (record.correctCount >= 5) {
+        record.mastered = true;
+      }
+    } else {
+      record.wrongCount++;
+      record.nextReviewAt = Date.now() + 24 * 60 * 60 * 1000; // 错了就明天复习
+    }
+    
+    this.save();
+  }
+
+  // 获取今日任务
+  getTodayTask(bookId: string): { newWords: Word[], reviewWords: Word[], reviewAllWords: Word[] } {
+    const book = this.getWordBook(bookId);
+    if (!book || !book.words.length) {
+      return { newWords: [], reviewWords: [], reviewAllWords: [] };
+    }
+
+    const perDay = book.perDayStudyNumber || this.state.settings.perDayStudyNumber || 40;
+    const now = Date.now();
+    const today = new Date().toDateString();
+    
+    // 获取新词：从lastLearnIndex开始取perDay个
+    const startIndex = book.lastLearnIndex || 0;
+    const newWords = book.words.slice(startIndex, startIndex + perDay);
+    
+    // 获取需要复习的单词（上次学习的）
+    const reviewStartIndex = Math.max(0, startIndex - perDay);
+    const reviewWords = book.words.slice(reviewStartIndex, startIndex);
+    
+    // 获取之前所有需要复习的单词
+    const reviewAllWords = this.state.learningRecords
+      .filter(r => r.nextReviewAt <= now && !r.mastered)
+      .map(r => book.words.find(w => w.id === r.wordId))
+      .filter(w => w) as Word[];
+    
+    return { newWords, reviewWords, reviewAllWords };
+  }
+
+  // 计算预计完成日期
+  getEstimatedCompletionDate(bookId: string): string {
+    const book = this.getWordBook(bookId);
+    if (!book) return '-';
+    
+    const remainingWords = book.wordCount - (book.lastLearnIndex || 0);
+    const perDay = book.perDayStudyNumber || this.state.settings.perDayStudyNumber || 40;
+    const daysNeeded = Math.ceil(remainingWords / perDay);
+    
+    const completionDate = new Date();
+    completionDate.setDate(completionDate.getDate() + daysNeeded);
+    
+    return `${completionDate.getFullYear()}-${String(completionDate.getMonth() + 1).padStart(2, '0')}-${String(completionDate.getDate()).padStart(2, '0')}`;
+  }
+
+  // 获取学习进度
+  getStudyProgress(bookId: string): number {
+    const book = this.getWordBook(bookId);
+    if (!book || !book.wordCount) return 0;
+    return Math.round((book.lastLearnIndex || 0) / book.wordCount * 100);
+  }
+
+  // 更新每日统计
+  updateDailyStats(newWords: number, reviewWords: number, correct: number, wrong: number, time: number) {
+    const today = new Date().toISOString().split('T')[0];
+    let stat = this.state.dailyStats.find(s => s.date === today);
+    if (!stat) {
+      stat = { date: today, newWords: 0, reviewWords: 0, correctCount: 0, wrongCount: 0, studyTime: 0 };
+      this.state.dailyStats.push(stat);
+    }
+    stat.newWords += newWords;
+    stat.reviewWords += reviewWords;
+    stat.correctCount += correct;
+    stat.wrongCount += wrong;
+    stat.studyTime += time;
+    this.save();
   }
 
   // 获取所有古诗集

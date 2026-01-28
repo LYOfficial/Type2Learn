@@ -43,7 +43,7 @@ export class HomePage {
             <div class="card-icon poetry">
               <i class="bi bi-feather"></i>
             </div>
-            <h3 class="card-title">古诗背诵</h3>
+            <h3 class="card-title">古文背诵</h3>
             <p class="card-desc">打字默写古诗词，边打边记，轻松掌握唐诗宋词，传承中华文化精髓。</p>
             <div style="margin-top: 12px; font-size: 13px; color: var(--text-muted);">
               <i class="bi bi-collection"></i> ${poetryBooks.length} 个诗集 · ${totalPoems} 首诗词

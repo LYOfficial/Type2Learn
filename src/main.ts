@@ -1,4 +1,5 @@
 import { getCurrentWindow } from '@tauri-apps/api/window';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import { App } from './app';
 import { ThemeManager } from './theme';
 import { Router } from './router';
@@ -76,4 +77,10 @@ async function updateMaximizeButton() {
 }
 
 // 启动应用
-init();
+init().catch((error) => {
+  console.error('Failed to initialize app:', error);
+  const app = document.getElementById('app');
+  if (app) {
+    app.innerHTML = `<div style="padding: 20px; color: red;">应用初始化失败: ${error.message}</div>`;
+  }
+});

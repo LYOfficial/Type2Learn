@@ -64,8 +64,11 @@ export class App {
         <!-- 侧边栏 -->
         <div class="sidebar">
           <div class="sidebar-header">
-            <div class="sidebar-title">Type2Learn</div>
-            <div class="sidebar-subtitle">通过打字学习一切</div>
+            <div class="sidebar-logo">
+              <span class="logo-type">Type</span>
+              <span class="logo-2">2</span>
+              <span class="logo-learn">Learn</span>
+            </div>
           </div>
           <nav class="sidebar-nav">
             <div class="nav-group">
@@ -75,23 +78,35 @@ export class App {
                 <span>首页</span>
               </div>
               <div class="nav-item ${this.router.getCurrentRoute() === 'words' || this.router.getCurrentRoute() === 'words-practice' ? 'active' : ''}" data-route="words">
-                <i class="bi bi-book"></i>
-                <span>单词学习</span>
+                <i class="bi bi-translate"></i>
+                <span>单词</span>
               </div>
               <div class="nav-item ${this.router.getCurrentRoute() === 'poetry' || this.router.getCurrentRoute() === 'poetry-practice' ? 'active' : ''}" data-route="poetry">
                 <i class="bi bi-feather"></i>
-                <span>古诗背诵</span>
+                <span>古文</span>
               </div>
               <div class="nav-item ${this.router.getCurrentRoute() === 'custom' || this.router.getCurrentRoute() === 'custom-practice' ? 'active' : ''}" data-route="custom">
                 <i class="bi bi-collection"></i>
-                <span>自定义默写</span>
+                <span>自定义</span>
               </div>
             </div>
             <div class="nav-group">
               <div class="nav-group-title">其他</div>
+              <div class="nav-item" data-route="feedback">
+                <i class="bi bi-chat-dots"></i>
+                <span>反馈</span>
+              </div>
+              <div class="nav-item" data-route="doc">
+                <i class="bi bi-file-text"></i>
+                <span>资料</span>
+              </div>
+              <div class="nav-item" data-route="help">
+                <i class="bi bi-question-circle"></i>
+                <span>帮助</span>
+              </div>
               <div class="nav-item ${this.router.getCurrentRoute() === 'settings' ? 'active' : ''}" data-route="settings">
-                <i class="bi bi-gear"></i>
-                <span>设置</span>
+                <i class="bi bi-sliders"></i>
+                <span>更多</span>
               </div>
             </div>
           </nav>
@@ -160,7 +175,8 @@ export class App {
         new HomePage(contentArea, this.store, this.router).render();
         break;
       case 'words':
-        new WordsPage(contentArea, this.store, this.router).render();
+        // WordsPage.render() is async
+        new WordsPage(contentArea, this.store, this.router).render().catch(console.error);
         break;
       case 'words-practice':
         new WordsPracticePage(contentArea, this.store, this.router, params).render();
