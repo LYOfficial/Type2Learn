@@ -13,22 +13,19 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: 'npm'
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
       - name: Install dependencies
-        run: pnpm install
+        run: npm install
       - name: Install Tauri CLI
-        run: pnpm add -g @tauri-apps/cli
+        run: npm install -g @tauri-apps/cli
       - name: Build and bundle app
-        run: pnpm run tauri build
+        run: npm run tauri build
 
       - name: Rename artifacts
         shell: bash
