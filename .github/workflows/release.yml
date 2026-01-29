@@ -40,19 +40,35 @@ jobs:
       - name: Build Tauri App
         run: npm run tauri build
 
-      - name: Rename installers
+      - name: Rename installers (Windows)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}".TrimStart('v')
+          $name = "Type2Learn_${tag}"
+          Get-ChildItem -Path src-tauri/target/release/bundle/nsis/*.exe -ErrorAction SilentlyContinue | ForEach-Object {
+            Rename-Item $_ -NewName ($name + "_Windows_x64-setup.exe")
+          }
+          Get-ChildItem -Path src-tauri/target/release/bundle/msi/*.msi -ErrorAction SilentlyContinue | ForEach-Object {
+            Rename-Item $_ -NewName ($name + "_Windows_x64.msi")
+          }
+
+      - name: Rename installers (macOS)
+        if: matrix.platform == 'macos-latest'
+        shell: bash
         run: |
           TAG=${GITHUB_REF#refs/tags/v}
           NAME="Type2Learn_${TAG}"
-          if [[ "${{ matrix.platform }}" == "windows-latest" ]]; then
-            mv src-tauri/target/release/bundle/nsis/*.exe $NAME"_Windows_x64-setup.exe" || true
-            mv src-tauri/target/release/bundle/msi/*.msi $NAME"_Windows_x64.msi" || true
-          elif [[ "${{ matrix.platform }}" == "macos-latest" ]]; then
-            mv src-tauri/target/release/bundle/dmg/*.dmg $NAME"_macOS.dmg" || true
-          elif [[ "${{ matrix.platform }}" == "ubuntu-22.04" ]]; then
-            mv src-tauri/target/release/bundle/deb/*.deb $NAME"_Linux.deb" || true
-            mv src-tauri/target/release/bundle/appimage/*.AppImage $NAME"_Linux.AppImage" || true
-          fi
+          mv src-tauri/target/release/bundle/dmg/*.dmg "$NAME_macOS.dmg" || true
+
+      - name: Rename installers (Linux)
+        if: matrix.platform == 'ubuntu-22.04'
+        shell: bash
+        run: |
+          TAG=${GITHUB_REF#refs/tags/v}
+          NAME="Type2Learn_${TAG}"
+          mv src-tauri/target/release/bundle/deb/*.deb "$NAME_Linux.deb" || true
+          mv src-tauri/target/release/bundle/appimage/*.AppImage "$NAME_Linux.AppImage" || true
 
       - name: Generate Changelog
         id: changelog
