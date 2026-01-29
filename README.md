@@ -34,9 +34,9 @@ Type2Learn 者，通过打字学习一切也，乃集单词记忆、古诗背诵
 
 ## 软件截图
 
-<img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/1.png?raw=true" alt="Type2Learn" height="320"/><img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/2.png?raw=true" alt="Type2Learn" height="320"/>
-<img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/3.png?raw=true" alt="Type2Learn" height="320"/><img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/4.png?raw=true" alt="Type2Learn" height="320"/>
-<img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/5.png?raw=true" alt="Type2Learn" height="320"/><img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/6.png?raw=true" alt="Type2Learn" height="320"/>
+<img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/1.png?raw=true" alt="Type2Learn" height="240"/><img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/2.png?raw=true" alt="Type2Learn" height="240"/>
+<img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/3.png?raw=true" alt="Type2Learn" height="240"/><img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/4.png?raw=true" alt="Type2Learn" height="240"/>
+<img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/5.png?raw=true" alt="Type2Learn" height="240"/><img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/6.png?raw=true" alt="Type2Learn" height="240"/>
 
 ## 使用方法
 
