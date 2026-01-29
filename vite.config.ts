@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   clearScreen: false,
   server: {
-    port: 3000,
+    port: 6888,
     strictPort: true,
   },
   envPrefix: ['VITE_', 'TAURI_'],
