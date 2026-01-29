@@ -1,6 +1,6 @@
 [package]
 name = "type2learn"
-version = "1.0.0"
+version = "0.1.0"
 description = "通过打字学习一切 - 单词、古诗、自定义默写库"
 authors = ["you"]
 license = "MIT"
