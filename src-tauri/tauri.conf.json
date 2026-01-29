@@ -42,6 +42,25 @@
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",
       "timestampUrl": ""
+    },
+    "installer": {
+      "enabled": true,
+      "windows": {
+        "installMode": "perMachine",
+        "menu": true,
+        "shortcut": true,
+        "upgrade": true
+      },
+      "macOS": {
+        "category": "public.app-category.productivity"
+      },
+      "deb": {
+        "depends": []
+      },
+      "appImage": {},
+      "updater": {
+        "active": false
+      }
     }
   }
 }
