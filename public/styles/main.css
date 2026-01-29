@@ -1782,6 +1782,8 @@ html, body {
 
 .word-tab-content {
   min-height: 80px;
+  max-height: 200px;
+  overflow-y: auto;
   padding: 20px 32px;
   background: var(--bg-secondary);
   border-radius: 12px;
@@ -2681,7 +2683,13 @@ html, body {
   flex: 1;
   height: 6px;
   -webkit-appearance: none;
-  background: var(--bg-tertiary);
+  background: var(--text-muted);
+  border-radius: 3px;
+}
+
+.goal-slider-group input[type="range"]::-webkit-slider-runnable-track {
+  background: var(--text-muted);
+  height: 6px;
   border-radius: 3px;
 }
 
@@ -2692,6 +2700,7 @@ html, body {
   background: var(--accent-color);
   border-radius: 50%;
   cursor: pointer;
+  margin-top: -7px;
 }
 
 .goal-slider-group input[type="number"],

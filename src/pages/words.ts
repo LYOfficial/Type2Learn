@@ -176,7 +176,7 @@ export class WordsPage {
 
         <div class="daily-goal-info">
           <i class="bi bi-bullseye"></i>
-          每日目标：<strong>${dict.perDayStudyNumber || 40}</strong> 个新词
+          每日目标：<strong>${dict.perDayStudyNumber || 40}</strong> 个新词，<strong>${this.store.getSettings().perDayReviewNumber || 40}</strong> 个复习
         </div>
       </div>
     `;
@@ -370,7 +370,9 @@ export class WordsPage {
     const studyDict = this.store.getStudyDict();
     if (!studyDict) return;
 
+    const settings = this.store.getSettings();
     const currentGoal = studyDict.perDayStudyNumber || 40;
+    const currentReviewGoal = settings.perDayReviewNumber || 40;
     const modal = document.createElement('div');
     modal.className = 'modal-overlay active';
     modal.innerHTML = `
@@ -388,6 +390,14 @@ export class WordsPage {
             </div>
             <p class="goal-hint" id="goal-hint">预计 ${this.wordService.getRemainingDays(studyDict.id)} 天完成</p>
           </div>
+          <div class="goal-input-group" style="margin-top: 24px;">
+            <label>每天复习词数量</label>
+            <div class="goal-slider-group">
+              <input type="range" id="review-slider" value="${currentReviewGoal}" min="10" max="200" step="10">
+              <input type="number" id="review-input" value="${currentReviewGoal}" min="10" max="200" step="10">
+            </div>
+            <p class="goal-hint">巩固已学过的单词</p>
+          </div>
         </div>
         <div class="modal-footer">
           <button class="btn-secondary" id="cancel-btn">取消</button>
@@ -400,6 +410,8 @@ export class WordsPage {
 
     const input = modal.querySelector('#goal-input') as HTMLInputElement;
     const slider = modal.querySelector('#goal-slider') as HTMLInputElement;
+    const reviewInput = modal.querySelector('#review-input') as HTMLInputElement;
+    const reviewSlider = modal.querySelector('#review-slider') as HTMLInputElement;
     const hint = modal.querySelector('#goal-hint') as HTMLElement;
 
     const updateHint = () => {
@@ -420,14 +432,24 @@ export class WordsPage {
       updateHint();
     });
 
+    reviewInput.addEventListener('input', () => {
+      reviewSlider.value = reviewInput.value;
+    });
+
+    reviewSlider.addEventListener('input', () => {
+      reviewInput.value = reviewSlider.value;
+    });
+
     modal.querySelector('#close-modal')?.addEventListener('click', () => modal.remove());
     modal.querySelector('#cancel-btn')?.addEventListener('click', () => modal.remove());
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
 
     modal.querySelector('#save-btn')?.addEventListener('click', () => {
       const newGoal = parseInt(input.value);
+      const newReviewGoal = parseInt(reviewInput.value);
       if (newGoal >= 10 && newGoal <= 200) {
         this.store.updateWordBook(studyDict.id, { perDayStudyNumber: newGoal });
+        this.store.updateSettings({ perDayReviewNumber: newReviewGoal });
         modal.remove();
         this.render();
       }

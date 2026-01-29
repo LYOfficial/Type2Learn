@@ -109,6 +109,15 @@ export interface AppState {
   dailyStats: DailyStats[];        // 每日统计
   studyDictId?: string;            // 当前正在学习的词典ID
   wordReviewRatio: number;         // 复习比例
+  dailyLearningProgress: DailyLearningProgress[]; // 每日学习进度
+}
+
+// 每日学习进度（记录今天已学了多少）
+export interface DailyLearningProgress {
+  date: string;                    // YYYY-MM-DD
+  bookId: string;                  // 词库ID
+  learnedCount: number;            // 今日已学新词数
+  startIndex: number;              // 今日开始学习的索引
 }
 
 // 应用设置
@@ -118,6 +127,9 @@ export interface AppSettings {
   showHint: boolean;
   practiceCount: number;
   perDayStudyNumber: number;       // 每日学习新词数，默认40
+  perDayReviewNumber: number;      // 每日复习词数，默认40
+  autoPlayAudio: boolean;          // 自动播放单词发音
+  tabSwitchKey: string;            // Tab切换快捷键：'arrow'(上下键) 或 'scroll'(滚轮) 或 'both'
 }
 
 // 默认单词本数据 - 四大默认词库
@@ -300,12 +312,16 @@ export class Store {
     learningRecords: [],
     dailyStats: [],
     wordReviewRatio: 1,
+    dailyLearningProgress: [],
     settings: {
       soundEnabled: true,
       autoNext: true,
       showHint: true,
       practiceCount: 20,
-      perDayStudyNumber: 40
+      perDayStudyNumber: 40,
+      perDayReviewNumber: 40,
+      autoPlayAudio: true,
+      tabSwitchKey: 'both'
     }
   };
 
@@ -462,6 +478,39 @@ export class Store {
     this.save();
   }
 
+  // 获取今日学习进度
+  getTodayLearningProgress(bookId: string): DailyLearningProgress | undefined {
+    const today = new Date().toISOString().split('T')[0];
+    return this.state.dailyLearningProgress.find(
+      p => p.date === today && p.bookId === bookId
+    );
+  }
+
+  // 更新今日学习进度
+  updateTodayLearningProgress(bookId: string, learnedCount: number) {
+    const today = new Date().toISOString().split('T')[0];
+    const book = this.getWordBook(bookId);
+    if (!book) return;
+
+    let progress = this.state.dailyLearningProgress.find(
+      p => p.date === today && p.bookId === bookId
+    );
+
+    if (!progress) {
+      // 今天第一次学习，记录开始索引
+      progress = {
+        date: today,
+        bookId,
+        learnedCount: 0,
+        startIndex: book.lastLearnIndex || 0
+      };
+      this.state.dailyLearningProgress.push(progress);
+    }
+
+    progress.learnedCount = learnedCount;
+    this.save();
+  }
+
   // 获取今日任务
   getTodayTask(bookId: string): { newWords: Word[], reviewWords: Word[], reviewAllWords: Word[] } {
     const book = this.getWordBook(bookId);
@@ -470,16 +519,25 @@ export class Store {
     }
 
     const perDay = book.perDayStudyNumber || this.state.settings.perDayStudyNumber || 40;
+    const perDayReview = this.state.settings.perDayReviewNumber || 40;
     const now = Date.now();
-    const today = new Date().toDateString();
+    const today = new Date().toISOString().split('T')[0];
     
-    // 获取新词：从lastLearnIndex开始取perDay个
-    const startIndex = book.lastLearnIndex || 0;
-    const newWords = book.words.slice(startIndex, startIndex + perDay);
+    // 获取今日学习进度
+    const todayProgress = this.getTodayLearningProgress(bookId);
+    const todayLearnedCount = todayProgress?.learnedCount || 0;
+    const todayStartIndex = todayProgress?.startIndex ?? (book.lastLearnIndex || 0);
     
-    // 获取需要复习的单词（上次学习的）
-    const reviewStartIndex = Math.max(0, startIndex - perDay);
-    const reviewWords = book.words.slice(reviewStartIndex, startIndex);
+    // 计算今天还需要学习多少新词
+    const remainingNewWords = Math.max(0, perDay - todayLearnedCount);
+    
+    // 获取新词：从今天已学进度继续，而不是从lastLearnIndex重新开始
+    const currentIndex = todayStartIndex + todayLearnedCount;
+    const newWords = book.words.slice(currentIndex, currentIndex + remainingNewWords);
+    
+    // 获取需要复习的单词（之前学过的）
+    const reviewStartIndex = Math.max(0, todayStartIndex - perDayReview);
+    const reviewWords = book.words.slice(reviewStartIndex, todayStartIndex).slice(0, perDayReview);
     
     // 获取之前所有需要复习的单词
     const reviewAllWords = this.state.learningRecords

@@ -206,7 +206,7 @@ export class WordsPracticePage {
           </div>
 
           <!-- 单词信息标签页 -->
-          <div class="word-tabs">
+          <div class="word-tabs" id="word-tabs-container">
             ${WORD_TABS.map(tab => `
               <div class="word-tab ${this.activeTab === tab.id ? 'active' : ''}" data-tab="${tab.id}">
                 <i class="bi ${tab.icon}"></i>
@@ -216,7 +216,7 @@ export class WordsPracticePage {
           </div>
 
           <!-- 标签内容 -->
-          <div class="word-tab-content">
+          <div class="word-tab-content" id="word-tab-content">
             ${this.renderTabContent(word)}
           </div>
         </div>
@@ -270,6 +270,48 @@ export class WordsPracticePage {
 
     this.bindPracticeEvents();
     this.startTimer();
+
+    // 自动播放音频
+    const settings = this.store.getSettings();
+    if (settings.autoPlayAudio) {
+      setTimeout(() => this.playPronunciation(word.word), 300);
+    }
+  }
+
+  private handleTabKeySwitch(e: KeyboardEvent) {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      // 如果焦点在输入框且有内容，不拦截
+      const input = document.getElementById('word-input') as HTMLInputElement;
+      if (input && document.activeElement === input && input.value) {
+        return;
+      }
+      
+      e.preventDefault();
+      const currentIndex = WORD_TABS.findIndex(t => t.id === this.activeTab);
+      if (e.key === 'ArrowDown') {
+        const nextIndex = (currentIndex + 1) % WORD_TABS.length;
+        this.switchToTab(WORD_TABS[nextIndex].id);
+      } else {
+        const prevIndex = (currentIndex - 1 + WORD_TABS.length) % WORD_TABS.length;
+        this.switchToTab(WORD_TABS[prevIndex].id);
+      }
+    }
+  }
+
+  private switchToTab(tabId: string) {
+    this.activeTab = tabId;
+    const word = this.words[this.currentIndex];
+    this.container.querySelectorAll('.word-tab').forEach(t => {
+      if (t.getAttribute('data-tab') === tabId) {
+        t.classList.add('active');
+      } else {
+        t.classList.remove('active');
+      }
+    });
+    const content = document.getElementById('word-tab-content');
+    if (content) {
+      content.innerHTML = this.renderTabContent(word);
+    }
   }
 
   private renderTabContent(word: Word): string {
@@ -377,15 +419,47 @@ export class WordsPracticePage {
     // 标签切换
     this.container.querySelectorAll('.word-tab').forEach(tab => {
       tab.addEventListener('click', () => {
-        this.activeTab = tab.getAttribute('data-tab') || 'meaning';
-        this.container.querySelectorAll('.word-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        const content = this.container.querySelector('.word-tab-content');
-        if (content) {
-          content.innerHTML = this.renderTabContent(word);
-        }
+        this.switchToTab(tab.getAttribute('data-tab') || 'meaning');
       });
     });
+
+    // 滚轮切换标签
+    const tabsContainer = document.getElementById('word-tabs-container');
+    const settings = this.store.getSettings();
+    if (tabsContainer && (settings.tabSwitchKey === 'scroll' || settings.tabSwitchKey === 'both')) {
+      tabsContainer.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const currentIndex = WORD_TABS.findIndex(t => t.id === this.activeTab);
+        if (e.deltaY > 0) {
+          // 向下滚动，切换到下一个标签
+          const nextIndex = (currentIndex + 1) % WORD_TABS.length;
+          this.switchToTab(WORD_TABS[nextIndex].id);
+        } else {
+          // 向上滚动，切换到上一个标签
+          const prevIndex = (currentIndex - 1 + WORD_TABS.length) % WORD_TABS.length;
+          this.switchToTab(WORD_TABS[prevIndex].id);
+        }
+      });
+    }
+
+    // 键盘上下键切换标签
+    if (settings.tabSwitchKey === 'arrow' || settings.tabSwitchKey === 'both') {
+      document.addEventListener('keydown', this.handleTabKeySwitch.bind(this));
+    }
+
+    // 点击单词文本切换显示/隐藏
+    const wordText = document.getElementById('word-text');
+    if (wordText) {
+      wordText.style.cursor = 'pointer';
+      wordText.addEventListener('click', () => {
+        this.showWord = !this.showWord;
+        if (this.showWord) {
+          wordText.classList.remove('hidden');
+        } else {
+          wordText.classList.add('hidden');
+        }
+      });
+    }
 
     // 输入事件
     input?.addEventListener('input', () => {
@@ -469,10 +543,17 @@ export class WordsPracticePage {
 
     // 更新学习进度
     if (this.mode === 'study') {
-      const newLearnIndex = Math.min(
-        (book.lastLearnIndex || 0) + this.words.length,
-        book.wordCount
-      );
+      // 计算本次实际学习了多少新词
+      const todayProgress = this.store.getTodayLearningProgress(this.bookId);
+      const previousLearnedCount = todayProgress?.learnedCount || 0;
+      const newLearnedCount = previousLearnedCount + this.currentIndex + 1;
+      
+      // 更新今日学习进度
+      this.store.updateTodayLearningProgress(this.bookId, newLearnedCount);
+      
+      // 更新词库总进度
+      const todayStartIndex = todayProgress?.startIndex ?? (book.lastLearnIndex || 0);
+      const newLearnIndex = todayStartIndex + newLearnedCount;
       const progress = Math.round(newLearnIndex / book.wordCount * 100);
       this.store.updateWordBookProgress(this.bookId, progress, newLearnIndex);
     }
@@ -480,8 +561,8 @@ export class WordsPracticePage {
     // 更新每日统计
     const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
     this.store.updateDailyStats(
-      this.mode === 'study' ? this.words.length : 0,
-      this.mode !== 'study' ? this.words.length : 0,
+      this.mode === 'study' ? this.currentIndex + 1 : 0,
+      this.mode !== 'study' ? this.currentIndex + 1 : 0,
       this.correctCount,
       this.wrongCount,
       elapsed

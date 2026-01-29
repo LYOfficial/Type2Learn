@@ -69,6 +69,14 @@ export class SettingsPage {
 
           <div class="settings-item">
             <div>
+              <div class="settings-item-label">自动播放发音</div>
+              <div class="settings-item-desc">打开新单词时自动播放发音</div>
+            </div>
+            <div class="toggle-switch ${settings.autoPlayAudio !== false ? 'active' : ''}" id="toggle-auto-play-audio"></div>
+          </div>
+
+          <div class="settings-item">
+            <div>
               <div class="settings-item-label">自动下一个</div>
               <div class="settings-item-desc">输入正确后自动跳转到下一个</div>
             </div>
@@ -81,6 +89,49 @@ export class SettingsPage {
               <div class="settings-item-desc">练习时显示提示按钮</div>
             </div>
             <div class="toggle-switch ${settings.showHint ? 'active' : ''}" id="toggle-hint"></div>
+          </div>
+
+          <div class="settings-item">
+            <div>
+              <div class="settings-item-label">单词信息切换方式</div>
+              <div class="settings-item-desc">切换翻译/音标/例句等标签的方式</div>
+            </div>
+            <select id="tab-switch-key" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--input-bg); color: var(--text-primary); font-size: 14px;">
+              <option value="both" ${settings.tabSwitchKey === 'both' ? 'selected' : ''}>上下键 + 滚轮</option>
+              <option value="arrow" ${settings.tabSwitchKey === 'arrow' ? 'selected' : ''}>仅上下键</option>
+              <option value="scroll" ${settings.tabSwitchKey === 'scroll' ? 'selected' : ''}>仅滚轮</option>
+              <option value="none" ${settings.tabSwitchKey === 'none' ? 'selected' : ''}>仅鼠标点击</option>
+            </select>
+          </div>
+
+          <div class="settings-item">
+            <div>
+              <div class="settings-item-label">每日新词数量</div>
+              <div class="settings-item-desc">默认每天学习的新单词数量</div>
+            </div>
+            <select id="per-day-study" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--input-bg); color: var(--text-primary); font-size: 14px;">
+              <option value="20" ${settings.perDayStudyNumber === 20 ? 'selected' : ''}>20</option>
+              <option value="30" ${settings.perDayStudyNumber === 30 ? 'selected' : ''}>30</option>
+              <option value="40" ${settings.perDayStudyNumber === 40 || !settings.perDayStudyNumber ? 'selected' : ''}>40</option>
+              <option value="50" ${settings.perDayStudyNumber === 50 ? 'selected' : ''}>50</option>
+              <option value="80" ${settings.perDayStudyNumber === 80 ? 'selected' : ''}>80</option>
+              <option value="100" ${settings.perDayStudyNumber === 100 ? 'selected' : ''}>100</option>
+            </select>
+          </div>
+
+          <div class="settings-item">
+            <div>
+              <div class="settings-item-label">每日复习数量</div>
+              <div class="settings-item-desc">默认每天复习的单词数量</div>
+            </div>
+            <select id="per-day-review" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--input-bg); color: var(--text-primary); font-size: 14px;">
+              <option value="20" ${settings.perDayReviewNumber === 20 ? 'selected' : ''}>20</option>
+              <option value="30" ${settings.perDayReviewNumber === 30 ? 'selected' : ''}>30</option>
+              <option value="40" ${settings.perDayReviewNumber === 40 || !settings.perDayReviewNumber ? 'selected' : ''}>40</option>
+              <option value="50" ${settings.perDayReviewNumber === 50 ? 'selected' : ''}>50</option>
+              <option value="80" ${settings.perDayReviewNumber === 80 ? 'selected' : ''}>80</option>
+              <option value="100" ${settings.perDayReviewNumber === 100 ? 'selected' : ''}>100</option>
+            </select>
           </div>
 
           <div class="settings-item">
@@ -199,6 +250,31 @@ export class SettingsPage {
       const toggle = e.currentTarget as HTMLElement;
       toggle.classList.toggle('active');
       this.store.updateSettings({ showHint: toggle.classList.contains('active') });
+    });
+
+    // 自动播放发音
+    document.getElementById('toggle-auto-play-audio')?.addEventListener('click', (e) => {
+      const toggle = e.currentTarget as HTMLElement;
+      toggle.classList.toggle('active');
+      this.store.updateSettings({ autoPlayAudio: toggle.classList.contains('active') });
+    });
+
+    // Tab切换方式
+    document.getElementById('tab-switch-key')?.addEventListener('change', (e) => {
+      const value = (e.target as HTMLSelectElement).value;
+      this.store.updateSettings({ tabSwitchKey: value });
+    });
+
+    // 每日新词数量
+    document.getElementById('per-day-study')?.addEventListener('change', (e) => {
+      const count = parseInt((e.target as HTMLSelectElement).value);
+      this.store.updateSettings({ perDayStudyNumber: count });
+    });
+
+    // 每日复习数量
+    document.getElementById('per-day-review')?.addEventListener('change', (e) => {
+      const count = parseInt((e.target as HTMLSelectElement).value);
+      this.store.updateSettings({ perDayReviewNumber: count });
     });
 
     // 练习数量
