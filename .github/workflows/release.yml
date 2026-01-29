@@ -5,7 +5,7 @@ on:
       - 'v*.*.*'
 
 
-  release:
+  build:
     permissions:
       contents: write
     strategy:
