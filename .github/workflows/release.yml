@@ -1,5 +1,3 @@
-on:
-jobs:
 name: Release
 on:
   push:
@@ -50,4 +48,4 @@ on:
             src-tauri/target/release/bundle/deb/*.deb
             src-tauri/target/release/bundle/appimage/*.AppImage
           if-no-files-found: warn
-              mv "$file" "../../../../Type2Learn_${VERSION}_Linux_x64.AppImage"
+            src-tauri/target/release/bundle/appimage/*.AppImage
