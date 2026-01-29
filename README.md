@@ -1,130 +1,100 @@
-# Type2Learn - 通过打字学习一切
+![Type2Learn](https://socialify.git.ci/LYOfficial/Type2Learn/image?description=1&font=KoHo&forks=1&issues=1&language=1&logo=https%3A%2F%2Fgithub.com%2FLYOfficial%2FType2Learn%2Fblob%2Fmain%2Fimg%2Ficon.png%3Fraw%3Dtrue&name=1&owner=1&pattern=Plus&pulls=1&stargazers=1&theme=Auto)
 
-Type2Learn 是一款基于 Tauri + TypeScript 开发的桌面应用程序，旨在通过打字练习的方式帮助用户记忆和学习各种内容。
+<p align="center">
+    <a href="./README.md">中文简体</a> | <a href="./README_EN.md">English</a>
+</p>
 
-## 功能特性
+<p align="center">
+<img src="https://img.shields.io/badge/Tauri-v2-FFC131?style=for-the-badge&logo=tauri&logoColor=white&labelColor=24C8DB" alt="Tauri" height="54" /> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" height="54" /> <img src="https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white" alt="Rust" height="54" />
+</p>
 
-### 🔤 单词学习
-- 支持 CET-4、CET-6、雅思等多种英语词库
-- 显示单词释义和音标
-- 通过打字输入加深记忆
-- 自动记录学习进度
+# Type2Learn
 
-### 📜 古诗背诵
-- 唐诗宋词精选诗集
-- 逐行默写练习
-- 显示作者和朝代信息
-- 支持查看提示
+> 通过打字学习一切。
+>
+> 一款基于打字练习的桌面学习应用。
 
-### 📝 自定义默写
-- 创建自己的默写库
-- 支持从 TXT 文件导入
-- 可添加提示信息
-- 导出和分享功能
+阁下若对此项目**有所青睐**，还请**移步右上**，点亮那颗**星标**，不胜感谢。
 
-### 🎨 界面特性
-- 类似 VS Code 的设计风格
-- 自定义标题栏（隐藏原生窗口按钮）
-- 三种主题模式：白天 / 黑夜 / 跟随系统
-- 简洁美观的界面设计
+[![Tauri](https://img.shields.io/badge/Tauri-v2-FFC131?style=for-the-badge&logo=tauri&logoColor=white&labelColor=24C8DB)](https://tauri.app/) ![TypeScript Badge](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![Rust Badge](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)
 
-## 技术栈
+**指尖飞舞，知识入心。打字之乐，学习无穷。**
 
-- **前端**: TypeScript, HTML5, CSS3
-- **后端**: Rust (Tauri 2.0)
-- **图标**: Bootstrap Icons (via BootCDN)
-- **动画**: Animate.css
+Type2Learn 者，通过打字学习一切也，乃集单词记忆、古诗背诵、自定义默写于一身，助君通过键盘输入，加深记忆，无论是英语单词、唐诗宋词，抑或个人笔记，皆可一键练习。
 
-## 安装与运行
+目前软件支持**CET-4、CET-6、雅思词库**、**唐诗宋词精选**、**自定义TXT导入**，支持**Windows/macOS/Linux跨平台**使用，基本满足各类学习需求。且软件为本地下载使用，无数据上传，保护隐私安全。
 
-### 前置要求
+软件功能主要有三种：
 
-1. [Node.js](https://nodejs.org/) (>= 18.0)
-2. [Rust](https://www.rust-lang.org/) (>= 1.70)
-3. [pnpm](https://pnpm.io/) 或 npm
+- **单词学习**——英语词汇记忆
+- **古诗背诵**——诗词默写练习
+- **自定义默写**——个性化内容练习
 
-### 安装依赖
+练习过程中可查看提示、记录进度，亦可导出数据备份。
+
+## 软件截图
+
+<img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/1.png?raw=true" alt="Type2Learn" height="320"/><img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/2.png?raw=true" alt="Type2Learn" height="320"/>
+<img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/3.png?raw=true" alt="Type2Learn" height="320"/><img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/4.png?raw=true" alt="Type2Learn" height="320"/>
+<img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/5.png?raw=true" alt="Type2Learn" height="320"/><img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/6.png?raw=true" alt="Type2Learn" height="320"/>
+
+## 使用方法
+
+**1 下载发行版软件**
+
+在项目发行页面找到最新版本： https://github.com/LYOfficial/Type2Learn/releases/latest
+
+找到适合于自己系统的软件并下载即可。
+
+**2 启动**
+
+启动软件后，进入主界面。
+
+**3 选择模块**
+
+在侧边栏选择「单词学习」、「古诗背诵」或「自定义默写」。
+
+**4 开始练习**
+
+选择词库或诗集，点击开始练习。根据提示在输入框中打字输入。
+
+**5 查看提示**
+
+按 `Tab` 键或点击灯泡按钮显示提示。
+
+更多详细说明请阅读项目文档。
+
+## 开发
+
+要参与开发和部署这个项目，请先克隆本仓库：
 
 ```bash
-cd type2learn
-npm install
+  git clone https://github.com/LYOfficial/Type2Learn.git
 ```
 
-### 开发模式
+安装Rust： https://rust-lang.org/zh-CN/tools/install/
+```bash
+# MacOS 用户选择
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+启动开发服务器：
 
 ```bash
-npm run tauri dev
+  npm install
+  npm run tauri dev
 ```
 
-### 构建发布版本
+构建：
 
 ```bash
-npm run tauri build
+  npm run tauri build
 ```
 
-构建完成后，安装包将位于 `src-tauri/target/release/bundle/` 目录下。
+## 作者
 
-## 项目结构
+- [@LYOfficial ](https://github.com/LYOfficial/) 主要开发，项目主管。
 
-```
-type2learn/
-├── index.html              # 主 HTML 文件
-├── package.json            # npm 配置
-├── tsconfig.json           # TypeScript 配置
-├── vite.config.ts          # Vite 配置
-├── public/
-│   └── styles/
-│       └── main.css        # 主样式文件
-├── src/
-│   ├── main.ts             # 入口文件
-│   ├── app.ts              # 应用主组件
-│   ├── theme.ts            # 主题管理
-│   ├── router.ts           # 路由管理
-│   ├── store.ts            # 数据存储
-│   └── pages/              # 页面组件
-│       ├── home.ts
-│       ├── words.ts
-│       ├── words-practice.ts
-│       ├── poetry.ts
-│       ├── poetry-practice.ts
-│       ├── custom.ts
-│       ├── custom-practice.ts
-│       └── settings.ts
-└── src-tauri/
-    ├── Cargo.toml          # Rust 依赖配置
-    ├── tauri.conf.json     # Tauri 配置
-    └── src/
-        └── main.rs         # Rust 入口
-```
+## Star 里程图
 
-## 使用说明
-
-1. **选择学习模块**: 在侧边栏选择「单词学习」、「古诗背诵」或「自定义默写」
-2. **选择词库/诗集**: 点击列表中的项目开始练习
-3. **打字练习**: 根据提示在输入框中输入正确内容
-4. **查看提示**: 按 `Tab` 键或点击灯泡按钮显示提示
-5. **切换主题**: 点击标题栏的主题按钮循环切换主题模式
-
-## 键盘快捷键
-
-| 快捷键 | 功能 |
-|--------|------|
-| `Tab` | 显示提示 |
-| `Enter` | 确认输入 |
-
-## 数据存储
-
-所有数据存储在本地 localStorage 中，包括：
-- 学习进度
-- 自定义默写库
-- 用户设置
-
-支持在设置页面导出和导入数据备份。
-
-## 致谢
-
-本项目参考了 [TypeWords](https://github.com/zyronon/typing-word) 开源项目的设计和交互方案。
-
-## 许可证
-
-MIT License
+[![Star History Chart](https://api.star-history.com/svg?repos=LYOfficial/Type2Learn&type=date&legend=top-left)](https://www.star-history.com/#LYOfficial/Type2Learn&type=date&legend=top-left)
