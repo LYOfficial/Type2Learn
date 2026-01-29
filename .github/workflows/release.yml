@@ -1,4 +1,5 @@
 name: Release
+
 on:
   push:
     tags:
@@ -6,18 +7,20 @@ on:
 
 jobs:
   build:
+    name: Build & Release
     permissions:
       contents: write
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-22.04, windows-latest]
+        platform: [windows-latest, macos-latest, ubuntu-22.04]
     runs-on: ${{ matrix.platform }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies (Ubuntu only)
+      - name: Install dependencies (Linux only)
         if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
@@ -34,18 +37,57 @@ jobs:
       - name: Install frontend dependencies
         run: npm install
 
-      - name: Build the app
+      - name: Build Tauri App
         run: npm run tauri build
 
-      - name: Upload artifacts
+      - name: Rename installers
+        run: |
+          TAG=${GITHUB_REF#refs/tags/v}
+          NAME="Type2Learn_${TAG}"
+          if [[ "${{ matrix.platform }}" == "windows-latest" ]]; then
+            mv src-tauri/target/release/bundle/nsis/*.exe $NAME"_Windows_x64-setup.exe" || true
+            mv src-tauri/target/release/bundle/msi/*.msi $NAME"_Windows_x64.msi" || true
+          elif [[ "${{ matrix.platform }}" == "macos-latest" ]]; then
+            mv src-tauri/target/release/bundle/dmg/*.dmg $NAME"_macOS.dmg" || true
+          elif [[ "${{ matrix.platform }}" == "ubuntu-22.04" ]]; then
+            mv src-tauri/target/release/bundle/deb/*.deb $NAME"_Linux.deb" || true
+            mv src-tauri/target/release/bundle/appimage/*.AppImage $NAME"_Linux.AppImage" || true
+          fi
+
+      - name: Generate Changelog
+        id: changelog
+        run: |
+          echo "## Full Changelog" > CHANGELOG.md
+          git log $(git describe --tags --abbrev=0 @^)..@ --pretty=format:"- %s (%h)" >> CHANGELOG.md
+
+      - name: Upload installers
         uses: actions/upload-artifact@v4
         with:
-          name: Type2Learn-${{ matrix.platform }}
+          name: installers-${{ matrix.platform }}
           path: |
-            src-tauri/target/release/bundle/msi/*.msi
-            src-tauri/target/release/bundle/nsis/*.exe
-            src-tauri/target/release/bundle/dmg/*.dmg
-            src-tauri/target/release/bundle/deb/*.deb
-            src-tauri/target/release/bundle/appimage/*.AppImage
+            Type2Learn_*.exe
+            Type2Learn_*.msi
+            Type2Learn_*.dmg
+            Type2Learn_*.deb
+            Type2Learn_*.AppImage
           if-no-files-found: warn
-            src-tauri/target/release/bundle/appimage/*.AppImage
+
+  release:
+    name: Publish Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download installers
+        uses: actions/download-artifact@v4
+        with:
+          path: ./dist
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Type2Learn ${{ github.ref_name }}
+          body_path: CHANGELOG.md
+          files: ./dist/installers-*/Type2Learn_*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
