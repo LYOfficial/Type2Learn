@@ -208,7 +208,7 @@ export class SettingsPage {
           <div class="settings-item" style="flex-direction: column; align-items: flex-start; gap: 12px;">
             <div style="display: flex; align-items: center; gap: 12px;">
               <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #0078d4, #106ebe); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                <img src="/img/type2learn.png" alt="Type2Learn" style="width: 32px; height: 32px; display: block;" />
+                <img src="/icons/icon.png" alt="Type2Learn" style="width: 32px; height: 32px; display: block;" />
               </div>
               <div>
                 <div style="font-size: 18px; font-weight: 600;">Type2Learn</div>

@@ -35,7 +35,7 @@ export class WordsPracticePage {
   private correctCount: number = 0;
   private wrongCount: number = 0;
   private timerInterval: any = null;
-  private docKeydownHandler: ((e: KeyboardEvent) => void) | null = null;
+  private docKeydownHandler: (e: KeyboardEvent) => void = () => {};
   private tabSwitchHandler: ((e: KeyboardEvent) => void) | null = null;
   
   // 防止重复计数
