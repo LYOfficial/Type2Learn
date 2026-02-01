@@ -34,6 +34,9 @@ export class WordsPracticePage {
   private startTime: number = 0;
   private correctCount: number = 0;
   private wrongCount: number = 0;
+  private timerInterval: any = null;
+  private docKeydownHandler: ((e: KeyboardEvent) => void) | null = null;
+  private tabSwitchHandler: ((e: KeyboardEvent) => void) | null = null;
 
   constructor(container: HTMLElement, store: Store, router: Router, params: RouteParams) {
     this.container = container;
@@ -94,6 +97,22 @@ export class WordsPracticePage {
 
     this.startTime = Date.now();
     this.renderPractice(book.name);
+  }
+
+  onDestroy() {
+    this.saveProgress();
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+    if (this.docKeydownHandler) {
+      document.removeEventListener('keydown', this.docKeydownHandler);
+      this.docKeydownHandler = null;
+    }
+    if (this.tabSwitchHandler) {
+      document.removeEventListener('keydown', this.tabSwitchHandler);
+      this.tabSwitchHandler = null;
+    }
   }
 
   private loadWords() {
@@ -260,9 +279,6 @@ export class WordsPracticePage {
             <button class="btn btn-secondary" id="btn-show-word">
               <i class="bi bi-eye"></i> 显示单词
             </button>
-            <button class="btn btn-secondary" id="btn-skip">
-              <i class="bi bi-skip-forward"></i> 跳过
-            </button>
           </div>
         </div>
       </div>
@@ -353,7 +369,7 @@ export class WordsPracticePage {
     };
 
     update();
-    setInterval(update, 1000);
+    this.timerInterval = setInterval(update, 1000);
   }
 
   private bindPracticeEvents() {
@@ -406,11 +422,6 @@ export class WordsPracticePage {
       }
     });
 
-    // 跳过
-    document.getElementById('btn-skip')?.addEventListener('click', () => {
-      this.goNext(false);
-    });
-
     // 播放发音
     document.getElementById('btn-play')?.addEventListener('click', () => {
       this.playPronunciation(word.word);
@@ -444,8 +455,44 @@ export class WordsPracticePage {
 
     // 键盘上下键切换标签
     if (settings.tabSwitchKey === 'arrow' || settings.tabSwitchKey === 'both') {
-      document.addEventListener('keydown', this.handleTabKeySwitch.bind(this));
+      this.tabSwitchHandler = this.handleTabKeySwitch.bind(this);
+      document.addEventListener('keydown', this.tabSwitchHandler);
     }
+
+    // 全局快捷键
+    this.docKeydownHandler = (e: KeyboardEvent) => {
+      // 忽略在输入框中的按键（除了特定的功能键）
+      const activeElement = document.activeElement;
+      const isInputFocused = activeElement === input;
+      
+      const collectKey = settings.shortcutCollect || 'Alt+c';
+      const masteredKey = settings.shortcutMastered || 'Alt+m';
+
+      const matchKey = (keyCombo: string, e: KeyboardEvent) => {
+        const parts = keyCombo.toLowerCase().split('+');
+        const key = parts[parts.length - 1];
+        const alt = parts.includes('alt');
+        const ctrl = parts.includes('ctrl');
+        const shift = parts.includes('shift');
+        return e.key.toLowerCase() === key && e.altKey === alt && e.ctrlKey === ctrl && e.shiftKey === shift;
+      };
+
+      if (matchKey(collectKey, e)) {
+        e.preventDefault();
+        const collectDict = this.store.getUserDict('collect');
+        if (collectDict?.words.find(w => w.word === word.word)) {
+          this.store.removeWordFromUserDict('collect', word.id);
+        } else {
+          this.store.addWordToUserDict('collect', word);
+        }
+        this.renderPractice(this.store.getWordBook(this.bookId)?.name || '');
+      } else if (matchKey(masteredKey, e)) {
+        e.preventDefault();
+        this.store.addWordToUserDict('mastered', word);
+        this.goNext(true);
+      }
+    };
+    document.addEventListener('keydown', this.docKeydownHandler);
 
     // 点击单词文本切换显示/隐藏
     const wordText = document.getElementById('word-text');
@@ -496,16 +543,11 @@ export class WordsPracticePage {
       if (e.key === 'Enter' && this.inputCorrect) {
         this.goNext(true);
       }
-      if (e.key === ' ' && input.value === '') {
-        e.preventDefault();
-        this.goNext(false);
-      }
     });
 
     // 自动聚焦
     input?.focus();
-  }
-
+  }// removed wrong word logic
   private playPronunciation(word: string) {
     // 使用浏览器的 Speech Synthesis API
     if ('speechSynthesis' in window) {

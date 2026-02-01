@@ -90,18 +90,6 @@ export class WordsPage {
                 ${wordBooks.map(book => this.renderWordBookItem(book, studyDict?.id === book.id)).join('')}
               </div>
             </div>
-
-            <!-- 导入自定义词库 -->
-            <div class="words-section import-section">
-              <div class="import-card" id="btn-import-excel">
-                <i class="bi bi-file-earmark-excel"></i>
-                <div class="import-info">
-                  <h4>导入 Excel 词库</h4>
-                  <p>支持 .xlsx 格式，包含单词和释义</p>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -280,20 +268,10 @@ export class WordsPage {
     const manageDictsBtn = this.container.querySelector('#btn-manage-dicts');
     if (manageDictsBtn) {
       manageDictsBtn.addEventListener('click', () => {
-        // TODO: 实现管理词典功能
-        alert('管理功能即将推出');
+        this.showManageDialog();
       });
     }
-    
-    // 导入Excel按钮
-    const importExcelBtn = this.container.querySelector('#btn-import-excel');
-    if (importExcelBtn) {
-      importExcelBtn.addEventListener('click', () => {
-        // TODO: 实现导入Excel功能
-        alert('导入功能即将推出');
-      });
-    }
-    
+
     // 词库项点击
     this.container.querySelectorAll('.wordbook-item').forEach(item => {
       item.addEventListener('click', () => {
@@ -308,10 +286,117 @@ export class WordsPage {
     this.container.querySelectorAll('.user-dict-item').forEach(item => {
       item.addEventListener('click', () => {
         const dictId = item.getAttribute('data-id');
-        // TODO: 实现用户词典点击功能
-        alert(`用户词典: ${dictId}`);
+        if (dictId) {
+          this.router.navigate('words-practice', { bookId: dictId, mode: 'free' });
+        }
       });
     });
+  }
+
+  private showManageDialog() {
+    const userDicts = this.store.getUserDicts();
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay active';
+    
+    const renderDictContent = (dictId: string) => {
+      const dict = this.store.getUserDicts().find(d => d.id === dictId);
+      if (!dict) return '';
+      if (dict.words.length === 0) return '<div class="empty-list">暂无单词</div>';
+      
+      return dict.words.map(word => `
+        <div class="manage-word-item">
+          <div class="word-info">
+            <div class="word-text">${word.word}</div>
+            <div class="word-meaning">${word.meaning}</div>
+          </div>
+          <button class="btn-icon text-danger btn-delete-word" data-id="${word.id}" title="删除">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      `).join('');
+    };
+
+    modal.innerHTML = `
+      <div class="modal-content modal-lg">
+        <div class="modal-header">
+          <h3><i class="bi bi-gear"></i> 管理词库</h3>
+          <button class="btn-close" id="close-modal"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="manage-layout">
+            <div class="manage-sidebar">
+              ${userDicts.map((dict, index) => `
+                <div class="manage-nav-item ${index === 0 ? 'active' : ''}" data-id="${dict.id}">
+                  <i class="bi ${dict.icon}"></i> ${dict.name}
+                  <span class="badge">${dict.words.length}</span>
+                </div>
+              `).join('')}
+            </div>
+            <div class="manage-content">
+              <div class="dict-actions">
+                 <button class="btn btn-primary btn-sm" id="btn-practice-dict">
+                   <i class="bi bi-play-fill"></i> 练习此词库
+                 </button>
+              </div>
+              <div class="word-list" id="manage-word-list">
+                ${userDicts.length > 0 ? renderDictContent(userDicts[0].id) : ''}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    let currentDictId = userDicts.length > 0 ? userDicts[0].id : '';
+
+    const updateList = () => {
+      const list = modal.querySelector('#manage-word-list');
+      if (list) {
+        list.innerHTML = renderDictContent(currentDictId);
+        bindDeleteEvents();
+      }
+      // UPDATE BADGES
+      userDicts.forEach(d => {
+        const bg = modal.querySelector(`.manage-nav-item[data-id="${d.id}"] .badge`);
+        if (bg) bg.textContent = this.store.getUserDicts().find(x => x.id === d.id)?.words.length.toString() || '0';
+      });
+    };
+
+    const bindDeleteEvents = () => {
+      modal.querySelectorAll('.btn-delete-word').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const wordId = btn.getAttribute('data-id');
+          if (wordId && currentDictId) {
+            this.store.removeWordFromUserDict(currentDictId, wordId);
+            updateList();
+            this.render(); // Refresh background
+          }
+        });
+      });
+    };
+
+    bindDeleteEvents();
+
+    modal.querySelectorAll('.manage-nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        modal.querySelectorAll('.manage-nav-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        currentDictId = item.getAttribute('data-id') || '';
+        updateList();
+      });
+    });
+
+    modal.querySelector('#btn-practice-dict')?.addEventListener('click', () => {
+       if (currentDictId) {
+         modal.remove();
+         this.router.navigate('words-practice', { bookId: currentDictId, mode: 'free' });
+       }
+    });
+
+    modal.querySelector('#close-modal')?.addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
   }
 
   private showDictSelector() {

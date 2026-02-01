@@ -103,7 +103,21 @@ export class SettingsPage {
               <option value="none" ${settings.tabSwitchKey === 'none' ? 'selected' : ''}>仅鼠标点击</option>
             </select>
           </div>
-
+          <div class="settings-item">
+            <div>
+              <div class="settings-item-label">收藏快捷键</div>
+              <div class="settings-item-desc">例如: c, Alt+c</div>
+            </div>
+            <input type="text" id="shortcut-collect" value="${settings.shortcutCollect || 'Alt+c'}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--input-bg); color: var(--text-primary); font-size: 14px; width: 100px;">
+          </div>
+          
+          <div class="settings-item">
+            <div>
+              <div class="settings-item-label">已掌握快捷键</div>
+              <div class="settings-item-desc">例如: m, Alt+m</div>
+            </div>
+            <input type="text" id="shortcut-mastered" value="${settings.shortcutMastered || 'Alt+m'}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--input-bg); color: var(--text-primary); font-size: 14px; width: 100px;">
+          </div>
           <div class="settings-item">
             <div>
               <div class="settings-item-label">每日新词数量</div>
@@ -262,6 +276,18 @@ export class SettingsPage {
     document.getElementById('tab-switch-key')?.addEventListener('change', (e) => {
       const value = (e.target as HTMLSelectElement).value;
       this.store.updateSettings({ tabSwitchKey: value });
+    });
+
+    // 收藏快捷键
+    document.getElementById('shortcut-collect')?.addEventListener('change', (e) => {
+      const value = (e.target as HTMLInputElement).value;
+      this.store.updateSettings({ shortcutCollect: value });
+    });
+
+    // 已掌握快捷键
+    document.getElementById('shortcut-mastered')?.addEventListener('change', (e) => {
+      const value = (e.target as HTMLInputElement).value;
+      this.store.updateSettings({ shortcutMastered: value });
     });
 
     // 每日新词数量

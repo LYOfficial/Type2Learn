@@ -130,6 +130,8 @@ export interface AppSettings {
   perDayReviewNumber: number;      // 每日复习词数，默认40
   autoPlayAudio: boolean;          // 自动播放单词发音
   tabSwitchKey: string;            // Tab切换快捷键：'arrow'(上下键) 或 'scroll'(滚轮) 或 'both'
+  shortcutCollect?: string;        // 收藏快捷键
+  shortcutMastered?: string;       // 已掌握快捷键
 }
 
 // 默认单词本数据 - 四大默认词库
@@ -321,7 +323,9 @@ export class Store {
       perDayStudyNumber: 40,
       perDayReviewNumber: 40,
       autoPlayAudio: true,
-      tabSwitchKey: 'both'
+      tabSwitchKey: 'both',
+      shortcutCollect: 'Alt+c',
+      shortcutMastered: 'Alt+m'
     }
   };
 
@@ -375,7 +379,25 @@ export class Store {
 
   // 获取单个单词本
   getWordBook(id: string): WordBook | undefined {
-    return this.state.wordBooks.find(book => book.id === id);
+    const book = this.state.wordBooks.find(book => book.id === id);
+    if (book) return book;
+
+    const userDict = this.state.userDicts.find(d => d.id === id);
+    if (userDict) {
+      return {
+        id: userDict.id,
+        name: userDict.name,
+        description: '用户自定义词库',
+        words: userDict.words,
+        wordCount: userDict.words.length,
+        progress: 0,
+        lastLearnIndex: 0,
+        perDayStudyNumber: 9999,
+        complete: false,
+        custom: true
+      };
+    }
+    return undefined;
   }
 
   // 更新单词本

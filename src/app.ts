@@ -14,6 +14,7 @@ export class App {
   private store: Store;
   private themeManager: ThemeManager;
   private router: Router;
+  private currentPage: any = null;
 
   constructor(store: Store, themeManager: ThemeManager, router: Router) {
     this.store = store;
@@ -152,6 +153,16 @@ export class App {
     const contentArea = document.getElementById('content-area');
     if (!contentArea) return;
 
+    // 清理当前页面资源
+    if (this.currentPage && typeof this.currentPage.onDestroy === 'function') {
+      try {
+        this.currentPage.onDestroy();
+      } catch (e) {
+        console.error('Error destroying page:', e);
+      }
+    }
+    this.currentPage = null;
+
     // 更新侧边栏激活状态
     document.querySelectorAll('.nav-item').forEach(item => {
       const route = item.getAttribute('data-route');
@@ -172,32 +183,40 @@ export class App {
 
     switch (route) {
       case 'home':
-        new HomePage(contentArea, this.store, this.router).render();
+        this.currentPage = new HomePage(contentArea, this.store, this.router);
+        this.currentPage.render();
         break;
       case 'words':
-        // WordsPage.render() is async
-        new WordsPage(contentArea, this.store, this.router).render().catch(console.error);
+        this.currentPage = new WordsPage(contentArea, this.store, this.router);
+        this.currentPage.render().catch(console.error);
         break;
       case 'words-practice':
-        new WordsPracticePage(contentArea, this.store, this.router, params).render();
+        this.currentPage = new WordsPracticePage(contentArea, this.store, this.router, params);
+        this.currentPage.render();
         break;
       case 'poetry':
-        new PoetryPage(contentArea, this.store, this.router).render();
+        this.currentPage = new PoetryPage(contentArea, this.store, this.router);
+        this.currentPage.render();
         break;
       case 'poetry-practice':
-        new PoetryPracticePage(contentArea, this.store, this.router, params).render();
+        this.currentPage = new PoetryPracticePage(contentArea, this.store, this.router, params);
+        this.currentPage.render();
         break;
       case 'custom':
-        new CustomPage(contentArea, this.store, this.router).render();
+        this.currentPage = new CustomPage(contentArea, this.store, this.router);
+        this.currentPage.render();
         break;
       case 'custom-practice':
-        new CustomPracticePage(contentArea, this.store, this.router, params).render();
+        this.currentPage = new CustomPracticePage(contentArea, this.store, this.router, params);
+        this.currentPage.render();
         break;
       case 'settings':
-        new SettingsPage(contentArea, this.store, this.router, this.themeManager).render();
+        this.currentPage = new SettingsPage(contentArea, this.store, this.router, this.themeManager);
+        this.currentPage.render();
         break;
       default:
-        new HomePage(contentArea, this.store, this.router).render();
+        this.currentPage = new HomePage(contentArea, this.store, this.router);
+        this.currentPage.render();
     }
   }
 }

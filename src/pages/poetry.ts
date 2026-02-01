@@ -81,18 +81,6 @@ export class PoetryPage {
                 ${poetryBooks.map(book => this.renderBookItem(book)).join('')}
               </div>
             </div>
-
-            <!-- 导入自定义古文 -->
-            <div class="poetry-section import-section">
-              <div class="import-card" id="btn-import-poetry">
-                <i class="bi bi-file-earmark-text"></i>
-                <div class="import-info">
-                  <h4>导入自定义古文</h4>
-                  <p>支持 TXT 格式，添加自己的古诗词</p>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -111,14 +99,6 @@ export class PoetryPage {
         }
       });
     });
-
-    // 导入按钮
-    const importBtn = this.container.querySelector('#btn-import-poetry');
-    if (importBtn) {
-      importBtn.addEventListener('click', () => {
-        console.log('Import poetry');
-      });
-    }
   }
 
   private renderBookItem(book: PoetryBook): string {
