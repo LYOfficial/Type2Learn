@@ -1,4 +1,4 @@
-![Type2Learn](https://socialify.git.ci/LYOfficial/Type2Learn/image?description=1&font=KoHo&forks=1&issues=1&language=1&logo=https%3A%2F%2Fgithub.com%2FLYOfficial%2FType2Learn%2Fblob%2Fmain%2Fimg%2Ftype2learn.png%3Fraw%3Dtrue&name=1&owner=1&pattern=Plus&pulls=1&stargazers=1&theme=Auto)
+![Type2Learn](https://socialify.git.ci/LYOfficial/Type2Learn/image?description=1&font=KoHo&forks=1&issues=1&language=1&logo=https%3A%2F%2Foss.1n.hk%2Fimage%2F08af3985-64a0-4ec0-9de7-bf82ce447513%2F5a8264c8286895a0.png&name=1&owner=1&pattern=Plus&pulls=1&stargazers=1&theme=Auto)
 
 <p align="center">
     <a href="./README.md">中文简体</a> | <a href="./README_EN.md">English</a>
@@ -34,9 +34,7 @@ Type2Learn 者，通过打字学习一切也，乃集单词记忆、古诗背诵
 
 ## 软件截图
 
-<img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/1.png?raw=true" alt="Type2Learn" height="240"/><img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/2.png?raw=true" alt="Type2Learn" height="240"/>
-<img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/3.png?raw=true" alt="Type2Learn" height="240"/><img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/4.png?raw=true" alt="Type2Learn" height="240"/>
-<img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/5.png?raw=true" alt="Type2Learn" height="240"/><img src="https://github.com/LYOfficial/Type2Learn/blob/main/img/6.png?raw=true" alt="Type2Learn" height="240"/>
+<img src="https://oss.1n.hk/image/08af3985-64a0-4ec0-9de7-bf82ce447513/4b74f9c550cde159.png" alt="Type2Learn" style="width:100%; max-width:1200px;" />
 
 ## 使用方法
 
