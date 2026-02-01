@@ -1,3 +1,6 @@
+import { invoke } from '@tauri-apps/api/core';
+import * as XLSX from 'xlsx';
+
 // 单词类型 - 扩展版，支持完整的单词信息
 export interface Word {
   id: string;
@@ -329,14 +332,40 @@ export class Store {
   };
 
   async init() {
-    // 从 localStorage 加载数据
-    const savedState = localStorage.getItem('type2learn-state');
-    if (savedState) {
-      try {
-        const parsed = JSON.parse(savedState);
-        this.state = { ...this.state, ...parsed };
-      } catch (e) {
-        console.error('Failed to parse saved state:', e);
+    // 优先尝试从本地文件加载数据 (Rust后端)
+    try {
+      const fileState = await invoke('load_data') as string;
+      if (fileState) {
+        try {
+          const parsed = JSON.parse(fileState);
+          this.state = { ...this.state, ...parsed };
+          console.log('Loaded state from data.json');
+        } catch (e) {
+          console.error('Failed to parse file state:', e);
+        }
+      } else {
+        // 如果文件没数据，尝试从 localStorage 加载 (作为后备或迁移)
+        const savedState = localStorage.getItem('type2learn-state');
+        if (savedState) {
+            try {
+                const parsed = JSON.parse(savedState);
+                this.state = { ...this.state, ...parsed };
+            } catch (e) {
+                console.error('Failed to parse localStorage state:', e);
+            }
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to invoke load_data (probably in browser mode):', e);
+      // Fallback to localStorage
+      const savedState = localStorage.getItem('type2learn-state');
+      if (savedState) {
+        try {
+            const parsed = JSON.parse(savedState);
+            this.state = { ...this.state, ...parsed };
+        } catch (err) {
+            console.error(err);
+        }
       }
     }
 
@@ -368,7 +397,13 @@ export class Store {
   }
 
   private save() {
-    localStorage.setItem('type2learn-state', JSON.stringify(this.state));
+    const dataStr = JSON.stringify(this.state);
+    localStorage.setItem('type2learn-state', dataStr);
+    
+    // 同时保存到本地文件
+    invoke('save_data', { data: dataStr }).catch(e => {
+        console.warn('Failed to save to file:', e);
+    });
   }
 
   // 获取所有单词本

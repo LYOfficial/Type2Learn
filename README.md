@@ -88,7 +88,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 构建：
 
 ```bash
-  npm run tauri build
+  npm run tauri build -- --bundles nsis
 ```
 
 ## 作者

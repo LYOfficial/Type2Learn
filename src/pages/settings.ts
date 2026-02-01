@@ -1,3 +1,4 @@
+import { invoke } from '@tauri-apps/api/core';
 import { Store } from '../store';
 import { Router } from '../router';
 import { ThemeManager, ThemeMode } from '../theme';
@@ -212,7 +213,7 @@ export class SettingsPage {
               </div>
               <div>
                 <div style="font-size: 18px; font-weight: 600;">Type2Learn</div>
-                <div style="font-size: 13px; color: var(--text-muted);">版本 1.0.0</div>
+                <div style="font-size: 13px; color: var(--text-muted);">版本 0.1.0</div>
               </div>
             </div>
             <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0;">
@@ -309,16 +310,26 @@ export class SettingsPage {
     });
 
     // 导出数据
-    document.getElementById('btn-export')?.addEventListener('click', () => {
-      const data = localStorage.getItem('type2learn-state');
-      if (data) {
-        const blob = new Blob([data], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `type2learn-backup-${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
+    document.getElementById('btn-export')?.addEventListener('click', async () => {
+      // 尝试保存到安装目录
+      try {
+        const data = localStorage.getItem('type2learn-state');
+        if (data) {
+           await invoke('save_data', { data });
+           alert('数据已成功导出并保存到安装目录下的 data.json 文件中。');
+        }
+      } catch (e) {
+         // Fallback to file download
+        const data = localStorage.getItem('type2learn-state');
+        if (data) {
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `type2learn-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
       }
     });
 

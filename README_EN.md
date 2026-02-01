@@ -88,7 +88,7 @@ Start the development server:
 Build:
 
 ```bash
-  npm run tauri build
+  npm run tauri build -- --bundles nsis
 ```
 
 ## Author
