@@ -254,7 +254,7 @@ export class WordsPracticePage {
             <div class="input-hint">
               <span>按 <kbd>Enter</kbd> 确认</span>
               <span>按 <kbd>Tab</kbd> 显示答案</span>
-              <span>按 <kbd>Space</kbd> 跳过</span>
+              <span>按 <kbd>Esc</kbd> 跳过</span>
             </div>
           </div>
         </div>
@@ -265,10 +265,6 @@ export class WordsPracticePage {
             <div class="stat">
               <i class="bi bi-check-circle text-success"></i>
               <span>${this.correctCount}</span>
-            </div>
-            <div class="stat">
-              <i class="bi bi-x-circle text-danger"></i>
-              <span>${this.wrongCount}</span>
             </div>
             <div class="stat">
               <i class="bi bi-clock"></i>
@@ -401,7 +397,15 @@ export class WordsPracticePage {
 
     // 下一个
     document.getElementById('btn-next')?.addEventListener('click', () => {
-      this.goNext(false);
+      // 强制要求输入正确才能进入下一个
+      if (this.inputCorrect) {
+        this.goNext(true);
+      } else {
+        // 提示用户需要输入正确
+        input?.focus();
+        input?.classList.add('error');
+        setTimeout(() => input?.classList.remove('error'), 500);
+      }
     });
 
     // 收藏
@@ -548,6 +552,11 @@ export class WordsPracticePage {
           wordText.classList.remove('hidden');
         }
       }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        // 标记为未完成，直接跳过（不计入正确）
+        this.goNext(false);
+      }
       if (e.key === 'Enter' && this.inputCorrect) {
         this.goNext(true);
       }
@@ -570,8 +579,7 @@ export class WordsPracticePage {
     
     if (!correct) {
       this.wrongCount++;
-      this.wrongWords.push(word);
-      this.store.addWordToUserDict('wrong', word);
+      // removed wrong words dict logic
       this.store.recordLearning(word.id, word.word, false);
     }
 
@@ -582,21 +590,26 @@ export class WordsPracticePage {
       this.renderPractice(this.store.getWordBook(this.bookId)?.name || '');
     } else {
       // 完成所有单词
-      this.saveProgress();
+      this.saveProgress(true);
       this.showComplete();
     }
   }
 
-  private saveProgress() {
+  private saveProgress(completedAll: boolean = false) {
     const book = this.store.getWordBook(this.bookId);
     if (!book) return;
+
+    // 计算实际完成的单词数
+    // 如果中途退出，currentIndex 指向的是正在学的（未完成），所以只计算 currentIndex 个
+    // 如果全部完成，currentIndex 指向最后一个，且已完成，所以需要 +1
+    const completedCount = this.currentIndex + (completedAll ? 1 : 0);
 
     // 更新学习进度
     if (this.mode === 'study') {
       // 计算本次实际学习了多少新词
       const todayProgress = this.store.getTodayLearningProgress(this.bookId);
       const previousLearnedCount = todayProgress?.learnedCount || 0;
-      const newLearnedCount = previousLearnedCount + this.currentIndex + 1;
+      const newLearnedCount = previousLearnedCount + completedCount;
       
       // 更新今日学习进度
       this.store.updateTodayLearningProgress(this.bookId, newLearnedCount);
@@ -611,8 +624,8 @@ export class WordsPracticePage {
     // 更新每日统计
     const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
     this.store.updateDailyStats(
-      this.mode === 'study' ? this.currentIndex + 1 : 0,
-      this.mode !== 'study' ? this.currentIndex + 1 : 0,
+      this.mode === 'study' ? completedCount : 0,
+      this.mode !== 'study' ? completedCount : 0,
       this.correctCount,
       this.wrongCount,
       elapsed

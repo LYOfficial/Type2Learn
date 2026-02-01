@@ -189,7 +189,6 @@ const defaultWordBooks: WordBook[] = [
 // 默认用户词典
 const defaultUserDicts: UserDict[] = [
   { id: 'collect', name: '收藏', icon: 'bi-star', words: [] },
-  { id: 'wrong', name: '错词', icon: 'bi-x-circle', words: [] },
   { id: 'mastered', name: '已掌握', icon: 'bi-check-circle', words: [] }
 ];
 
