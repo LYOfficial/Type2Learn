@@ -113,10 +113,10 @@ export class SettingsPage {
           
           <div class="settings-item">
             <div>
-              <div class="settings-item-label">未掌握快捷键</div>
+              <div class="settings-item-label">已掌握快捷键</div>
               <div class="settings-item-desc">例如: v, Alt+v</div>
             </div>
-            <input type="text" id="shortcut-unknown" value="${settings.shortcutUnknown || 'Alt+v'}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--input-bg); color: var(--text-primary); font-size: 14px; width: 100px;">
+            <input type="text" id="shortcut-mastered" value="${settings.shortcutMastered || 'Alt+v'}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--input-bg); color: var(--text-primary); font-size: 14px; width: 100px;">
           </div>
           <div class="settings-item">
             <div>
@@ -284,10 +284,10 @@ export class SettingsPage {
       this.store.updateSettings({ shortcutCollect: value });
     });
 
-    // 未掌握快捷键
-    document.getElementById('shortcut-unknown')?.addEventListener('change', (e) => {
+    // 已掌握快捷键
+    document.getElementById('shortcut-mastered')?.addEventListener('change', (e) => {
       const value = (e.target as HTMLInputElement).value;
-      this.store.updateSettings({ shortcutUnknown: value });
+      this.store.updateSettings({ shortcutMastered: value });
     });
 
     // 每日新词数量

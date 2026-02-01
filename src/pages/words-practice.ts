@@ -37,6 +37,13 @@ export class WordsPracticePage {
   private timerInterval: any = null;
   private docKeydownHandler: ((e: KeyboardEvent) => void) | null = null;
   private tabSwitchHandler: ((e: KeyboardEvent) => void) | null = null;
+  
+  // 防止重复计数
+  private initialDailyLearnedCount: number = 0;
+  private lastSavedCount: number = 0;
+  private lastSavedCorrect: number = 0;
+  private lastSavedWrong: number = 0;
+  private lastSavedElapsed: number = 0;
 
   constructor(container: HTMLElement, store: Store, router: Router, params: RouteParams) {
     this.container = container;
@@ -96,28 +103,107 @@ export class WordsPracticePage {
     }
 
     this.startTime = Date.now();
+
+    // 绑定全局事件
+    this.bindGlobalEvents();
+    // 启动计时器
+    this.startTimer();
+
     this.renderPractice(book.name);
   }
 
-  onDestroy() {
-    this.saveProgress();
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-      this.timerInterval = null;
-    }
+  private bindGlobalEvents() {
+    // 如果已经绑定过，先移除
     if (this.docKeydownHandler) {
       document.removeEventListener('keydown', this.docKeydownHandler);
-      this.docKeydownHandler = null;
     }
     if (this.tabSwitchHandler) {
       document.removeEventListener('keydown', this.tabSwitchHandler);
-      this.tabSwitchHandler = null;
     }
+
+    const settings = this.store.getSettings();
+
+    // 键盘上下键切换标签
+    if (settings.tabSwitchKey === 'arrow' || settings.tabSwitchKey === 'both') {
+      this.tabSwitchHandler = this.handleTabKeySwitch.bind(this);
+      document.addEventListener('keydown', this.tabSwitchHandler);
+    }
+
+    // 全局快捷键
+    this.docKeydownHandler = (e: KeyboardEvent) => {
+      // 动态获取当前单词和状态
+      const word = this.words[this.currentIndex];
+      const input = document.getElementById('word-input') as HTMLInputElement;
+
+      // 忽略在输入框中的按键（除了特定的功能键）
+      const activeElement = document.activeElement;
+      // const isInputFocused = activeElement === input; // 未使用的变量
+      
+      const collectKey = settings.shortcutCollect || 'Alt+c';
+      const masteredKey = settings.shortcutMastered || 'Alt+v';
+
+      const matchKey = (keyCombo: string, e: KeyboardEvent) => {
+        const parts = keyCombo.toLowerCase().split('+');
+        const key = parts[parts.length - 1];
+        const alt = parts.includes('alt');
+        const ctrl = parts.includes('ctrl');
+        const shift = parts.includes('shift');
+        return e.key.toLowerCase() === key && e.altKey === alt && e.ctrlKey === ctrl && e.shiftKey === shift;
+      };
+
+      if (matchKey(collectKey, e)) {
+        e.preventDefault();
+        const collectDict = this.store.getUserDict('collect');
+        if (collectDict?.words.find(w => w.word === word.word)) {
+          this.store.removeWordFromUserDict('collect', word.id);
+        } else {
+          this.store.addWordToUserDict('collect', word);
+        }
+        // 只重新渲染收藏按钮状态，避免重刷整个界面
+        this.updateCollectStatus(word);
+      } else if (matchKey(masteredKey, e)) {
+        e.preventDefault();
+        this.store.addWordToUserDict('mastered', word);
+        this.goNext(true);
+      }
+    };
+    document.addEventListener('keydown', this.docKeydownHandler);
+  }
+
+  // 仅仅更新收藏按钮状态
+  private updateCollectStatus(word: Word) {
+      const btnCollect = document.getElementById('btn-collect');
+      if (btnCollect) {
+          const isCollected = this.store.getUserDict('collect')?.words.find(w => w.word === word.word);
+          if (isCollected) {
+              btnCollect.classList.add('active');
+              const icon = btnCollect.querySelector('i');
+              if (icon) {
+                  icon.classList.remove('bi-star');
+                  icon.classList.add('bi-star-fill');
+              }
+          } else {
+              btnCollect.classList.remove('active');
+              const icon = btnCollect.querySelector('i');
+              if (icon) {
+                  icon.classList.remove('bi-star-fill');
+                  icon.classList.add('bi-star');
+              }
+          }
+      }
   }
 
   private loadWords() {
     const book = this.store.getWordBook(this.bookId);
     if (!book) return;
+
+    // 初始化计数
+    const todayProgress = this.store.getTodayLearningProgress(this.bookId);
+    this.initialDailyLearnedCount = todayProgress?.learnedCount || 0;
+    this.lastSavedCount = 0;
+    this.lastSavedCorrect = 0;
+    this.lastSavedWrong = 0;
+    this.lastSavedElapsed = 0;
 
     const task = this.store.getTodayTask(this.bookId);
     
@@ -409,21 +495,49 @@ export class WordsPracticePage {
     });
 
     // 收藏
-    document.getElementById('btn-collect')?.addEventListener('click', () => {
-      const collectDict = this.store.getUserDict('collect');
-      if (collectDict?.words.find(w => w.word === word.word)) {
-        this.store.removeWordFromUserDict('collect', word.id);
-      } else {
-        this.store.addWordToUserDict('collect', word);
-      }
-      this.renderPractice(this.store.getWordBook(this.bookId)?.name || '');
-    });
+    const btnCollect = document.getElementById('btn-collect');
+    if (btnCollect) {
+      btnCollect.addEventListener('click', () => {
+        const collectDict = this.store.getUserDict('collect');
+        const isCollected = collectDict?.words.some(w => w.word === word.word);
+
+        if (isCollected) {
+          this.store.removeWordFromUserDict('collect', word.id);
+          btnCollect.classList.remove('active');
+          const icon = btnCollect.querySelector('i');
+          if (icon) {
+            icon.classList.remove('bi-star-fill');
+            icon.classList.add('bi-star');
+          }
+        } else {
+          this.store.addWordToUserDict('collect', word);
+          btnCollect.classList.add('active');
+          const icon = btnCollect.querySelector('i');
+          if (icon) {
+            icon.classList.remove('bi-star');
+            icon.classList.add('bi-star-fill');
+          }
+        }
+      });
+    }
 
     // 标记为已掌握
-    document.getElementById('btn-known')?.addEventListener('click', () => {
-      this.store.addWordToUserDict('mastered', word);
-      this.goNext(true);
-    });
+    const btnKnown = document.getElementById('btn-known');
+    if (btnKnown) {
+      btnKnown.addEventListener('click', () => {
+        // 立刻刷新按钮图标
+        btnKnown.classList.add('active');
+        const icon = btnKnown.querySelector('i');
+        if (icon) {
+          icon.classList.remove('bi-check-circle');
+          icon.classList.add('bi-check-circle-fill');
+        }
+
+        this.store.addWordToUserDict('mastered', word);
+        // 跳过进入下一个
+        this.goNext(true);
+      });
+    }
 
     // 显示单词
     document.getElementById('btn-show-word')?.addEventListener('click', () => {
@@ -465,13 +579,17 @@ export class WordsPracticePage {
       });
     }
 
-    // 键盘上下键切换标签
+    // 这里已经移动到 bindGlobalEvents 中处理，移除重复绑定
+    /*
     if (settings.tabSwitchKey === 'arrow' || settings.tabSwitchKey === 'both') {
       this.tabSwitchHandler = this.handleTabKeySwitch.bind(this);
       document.addEventListener('keydown', this.tabSwitchHandler);
     }
+    */
 
     // 全局快捷键
+    // 这里已经移动到 bindGlobalEvents 中处理，移除重复绑定
+    /*
     this.docKeydownHandler = (e: KeyboardEvent) => {
       // 忽略在输入框中的按键（除了特定的功能键）
       const activeElement = document.activeElement;
@@ -504,6 +622,8 @@ export class WordsPracticePage {
         this.goNext(true);
       }
     };
+    document.addEventListener('keydown', this.docKeydownHandler);
+    */
     document.addEventListener('keydown', this.docKeydownHandler);
 
     // 点击单词文本切换显示/隐藏
@@ -552,11 +672,6 @@ export class WordsPracticePage {
           wordText.classList.remove('hidden');
         }
       }
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        // 标记为未完成，直接跳过（不计入正确）
-        this.goNext(false);
-      }
       if (e.key === 'Enter' && this.inputCorrect) {
         this.goNext(true);
       }
@@ -600,36 +715,53 @@ export class WordsPracticePage {
     if (!book) return;
 
     // 计算实际完成的单词数
-    // 如果中途退出，currentIndex 指向的是正在学的（未完成），所以只计算 currentIndex 个
-    // 如果全部完成，currentIndex 指向最后一个，且已完成，所以需要 +1
     const completedCount = this.currentIndex + (completedAll ? 1 : 0);
+
+    // 计算增量
+    const delta = completedCount - this.lastSavedCount;
+    if (delta <= 0) return; // 没有新增进度，无需保存
 
     // 更新学习进度
     if (this.mode === 'study') {
       // 计算本次实际学习了多少新词
-      const todayProgress = this.store.getTodayLearningProgress(this.bookId);
-      const previousLearnedCount = todayProgress?.learnedCount || 0;
-      const newLearnedCount = previousLearnedCount + completedCount;
+      const newLearnedCount = this.initialDailyLearnedCount + completedCount;
       
       // 更新今日学习进度
       this.store.updateTodayLearningProgress(this.bookId, newLearnedCount);
       
       // 更新词库总进度
+      const todayProgress = this.store.getTodayLearningProgress(this.bookId);
       const todayStartIndex = todayProgress?.startIndex ?? (book.lastLearnIndex || 0);
-      const newLearnIndex = todayStartIndex + newLearnedCount;
+      const newLearnIndex = todayStartIndex + newLearnedCount; // 注意这里可能有逻辑问题，原代码是用newLearnedCount加到todayStartIndex?
+      // 原代码：const newLearnIndex = todayStartIndex + newLearnedCount;
+      // 这里的newLearnedCount是"今日累计学习数"。
+      // todayStartIndex是"今日开始时的索引"。
+      // 所以当前进度索引 = 开始索引 + 今日累计。逻辑是正确的。
+      
       const progress = Math.round(newLearnIndex / book.wordCount * 100);
       this.store.updateWordBookProgress(this.bookId, progress, newLearnIndex);
     }
 
     // 更新每日统计
     const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+    
+    const correctDelta = this.correctCount - this.lastSavedCorrect;
+    const wrongDelta = this.wrongCount - this.lastSavedWrong;
+    const elapsedDelta = elapsed - this.lastSavedElapsed;
+
     this.store.updateDailyStats(
-      this.mode === 'study' ? completedCount : 0,
-      this.mode !== 'study' ? completedCount : 0,
-      this.correctCount,
-      this.wrongCount,
-      elapsed
+      this.mode === 'study' ? delta : 0,
+      this.mode !== 'study' ? delta : 0,
+      correctDelta,
+      wrongDelta,
+      elapsedDelta
     );
+    
+    // 更新上次保存的计数
+    this.lastSavedCount = completedCount;
+    this.lastSavedCorrect = this.correctCount;
+    this.lastSavedWrong = this.wrongCount;
+    this.lastSavedElapsed = elapsed;
   }
 
   private showComplete() {

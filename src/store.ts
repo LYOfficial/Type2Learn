@@ -324,7 +324,7 @@ export class Store {
       autoPlayAudio: true,
       tabSwitchKey: 'both',
       shortcutCollect: 'Alt+c',
-      shortcutMastered: 'Alt+m'
+      shortcutMastered: 'Alt+v'
     }
   };
 
