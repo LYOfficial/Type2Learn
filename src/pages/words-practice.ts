@@ -377,10 +377,18 @@ export class WordsPracticePage {
     const word = this.words[this.currentIndex];
 
     // 返回按钮
-    document.getElementById('btn-back')?.addEventListener('click', () => {
-      this.saveProgress();
-      this.router.navigate('words');
-    });
+    const btnBack = document.getElementById('btn-back');
+    if (btnBack) {
+      btnBack.addEventListener('click', (e) => {
+        e.preventDefault();
+        try {
+          this.saveProgress();
+        } catch (error) {
+          console.error('Save progress failed:', error);
+        }
+        this.router.navigate('words');
+      });
+    }
 
     // 上一个
     document.getElementById('btn-prev')?.addEventListener('click', () => {

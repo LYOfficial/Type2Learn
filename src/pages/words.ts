@@ -442,8 +442,17 @@ export class WordsPage {
       item.addEventListener('click', async () => {
         const bookId = item.getAttribute('data-id');
         if (bookId) {
-          this.store.setStudyDict(bookId);
-          await this.wordService.loadWordBook(bookId);
+          const originalContent = item.innerHTML;
+          item.innerHTML = '<div style="text-align:center;padding:20px;"><i class="bi bi-arrow-repeat spin"></i> 加载中...</div>';
+          (item as HTMLElement).style.pointerEvents = 'none';
+
+          try {
+            this.store.setStudyDict(bookId);
+            await this.wordService.loadWordBook(bookId);
+          } catch (e) {
+            console.error('Failed to load book:', e);
+          }
+          
           modal.remove();
           this.render();
         }
@@ -634,8 +643,19 @@ export class WordsPage {
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
 
     modal.querySelector('#start-btn')?.addEventListener('click', async () => {
-      this.store.setStudyDict(bookId);
-      await this.wordService.loadWordBook(bookId);
+      const btn = modal.querySelector('#start-btn') as HTMLButtonElement;
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> 加载中...';
+      }
+      
+      try {
+        this.store.setStudyDict(bookId);
+        await this.wordService.loadWordBook(bookId);
+      } catch (e) {
+        console.error('Failed to load book:', e);
+      }
+      
       modal.remove();
       this.render();
     });
